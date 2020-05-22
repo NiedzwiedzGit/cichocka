@@ -1,0 +1,9 @@
+.Main{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 12em;
+    width: 100%;
+    text-align: center;
+}
