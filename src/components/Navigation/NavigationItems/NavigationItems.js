@@ -3,6 +3,7 @@ import classes from './NavigationItems.css';
 import NavigationItem from './NavigationItem/NavigationItem';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions/index';
+import Button from '../../UI/Button/Button';
 
 export class NavigationItems extends Component {
     render() {
@@ -19,8 +20,11 @@ export class NavigationItems extends Component {
                 {!this.props.isAuthenticated
                     ? <NavigationItem link="/auth">Authenticate</NavigationItem>
                     : <NavigationItem link="/logout">Logout</NavigationItem>}
-                <button onClick={this.props.onAddHeaderItem}>+</button>
-            </ul>
+                {/* <button onClick={this.props.onAddHeaderItem}>+</button> */}
+                <Button
+                    btnType="Danger"
+                    onClick={this.props.onAddHeaderItem}>+</Button>
+            </ul >
         );
     }
 

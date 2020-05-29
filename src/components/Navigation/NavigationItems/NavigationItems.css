@@ -5,6 +5,7 @@
     display: flex;
     flex-flow: column;
     align-items: center;
+    font-size: 90%;
     /* border:2px solid black; */
     width: 70%;
     height: 100%;

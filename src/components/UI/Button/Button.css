@@ -8,6 +8,7 @@
     padding: 10px;
     margin: 10px;
     font-weight: bold;
+    
 }
 
 .Button:first-of-type {
@@ -26,4 +27,64 @@
 
 .Danger {
     color: #944317;
+}
+
+.Add{
+    top:200px;
+    position: absolute;
+    display:inline-block;
+    width:50px;
+    height:50px;
+    
+    background:
+      linear-gradient(#fff,#fff),
+      linear-gradient(#fff,#fff),
+      #000;
+    background-position:center;
+    background-size: 50% 2px,2px 50%; /*thickness = 2px, length = 50% (25px)*/
+    background-repeat:no-repeat;
+    border-radius:50%;
+    transition-duration: 0.2s; 
+}
+
+.Add:hover{
+   position: absolute;
+    background-color: #4CAF50; /* Green */
+    width:60px;
+    height:60px;
+    color: white;
+    opacity: 0.6;
+    text-align: center;
+    transform: rotate(90deg);
+}
+
+.Close{
+    top:200px;
+    position: absolute;
+    display:inline-block;
+    width:50px;
+    height:50px;
+    
+    background:
+      linear-gradient(red,#fff),
+      linear-gradient(#fff,#fff),
+      red;
+    background-position:center;
+    background-size: 50% 2px,2px 50%; /*thickness = 2px, length = 50% (25px)*/
+    background-repeat:no-repeat;
+    border-radius:50%;
+    opacity: 0.4;
+    transform: rotate(40deg);
+    transition-duration: 0.2s;
+}
+
+.Close:hover{
+   position: absolute;
+    background-color: red; /* Green */
+    transform: rotate(130deg);
+    width:60px;
+    height:60px;
+    color: white;
+    opacity: 0.6;
+    text-align: center;
 }
