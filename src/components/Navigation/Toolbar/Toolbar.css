@@ -1,7 +1,7 @@
 .Toolbar {
 height:176px;
 width: 100%;
-position: fixed;
+/* position: fixed; */
 top:0;
 left:0;
 display: block;
@@ -10,11 +10,11 @@ align-items: center;
 padding:20px 20px;
 box-sizing: border-box;
 z-index:90;
+
 }
 
 .Toolbar nav{
     height:auto;
-
 }
 
 .Logo{
@@ -22,7 +22,18 @@ z-index:90;
     text-align: center;
     margin: auto;
 }
-@media(max-width:499px){
+@media(max-width:700px){
+    .Toolbar{
+    left: 0;
+       padding: 0;
+       text-align: center;
+       margin: auto;
+    }
+    .Toolbar nav{
+       
+    }
+}
+@media(max-width:690px){
     .DesktopOnly{
         display:none;
     }

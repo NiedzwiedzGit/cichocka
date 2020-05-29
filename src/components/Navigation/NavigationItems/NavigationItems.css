@@ -17,7 +17,13 @@
    
 }
 
-@media(min-width:500px){
+@media(max-width:840px){
+    .NavigationItems{
+        width: 100%;
+    }
+}
+
+@media(min-width:690px){
     .NavigationItems{
         flex-flow: row;
     }
