@@ -7,10 +7,10 @@ import Button from '../../UI/Button/Button';
 
 export class NavigationItems extends Component {
     render() {
-        console.log(this.props.hdr.headerTitles);
-        // let i = 0;
         let headerItem = this.props.hdr.map((imt, index) => (
-            <NavigationItem link={imt.title.toLowerCase()} > {imt.title}</NavigationItem >
+            < NavigationItem
+                key={index}
+                link={imt.title.toLowerCase()} > {imt.title}</NavigationItem >
         ));
         return (
             <ul className={classes.NavigationItems}>

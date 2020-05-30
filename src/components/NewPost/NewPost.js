@@ -2,66 +2,69 @@ import React, { Component } from 'react';
 import axios from '../../axios-orders';
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 import classes from './NewPost.css';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
 import ImagesBlock from '../ImagesBlock/ImagesBlock';
 
-import firebase from '@firebase/app';
-//                                                                                   
-import '@firebase/auth';
-import '@firebase/storage';
+
+// import firebase from '@firebase/app';
+// //                                                                                   
+// import '@firebase/auth';
+// import '@firebase/storage';
 
 
 class NewPost extends Component {
     state = {
-        title: '',
-        content: '',
-        country: '',
-        region: '',
-        author: 'Cichocka',
-
+        fillContent: {
+            title: '',
+            content: '',
+            country: '',
+            region: '',
+            author: 'Cichocka'
+        }
     }
 
     componentDidMount() {
 
     }
     postDataHandler = () => {
-        // const data = {
-        //     title: this.state.title,
-        //     content: this.state.content,
-        //     country: this.state.country,
-        //     region: this.state.region,
-        //     author: this.state.author
+
+
+        // const firebaseConfig = {
+        //     apiKey: "AIzaSyBot6sPtRy9jVw92sVBevsTiL0vHCJzReg",
+        //     authDomain: "cichocka-c6fc5.firebaseapp.com",
+        //     databaseURL: "https://cichocka-c6fc5.firebaseio.com",
+        //     projectId: "cichocka-c6fc5",
+        //     storageBucket: "cichocka-c6fc5.appspot.com",
+        //     messagingSenderId: "874982592562",
+        //     appId: "1:874982592562:web:45166de12b61cc2323ec2b",
+        //     measurementId: "G-1458J9ZZ5P"
         // };
-        // axios.post('/newposts.json', data)
-        //     .then(response => {
-        //         console.log(response);
+        // firebase.initializeApp(firebaseConfig);
+        // const storage = firebase.storage();
+        // const storageRef = storage.ref();
+        // const imagesRef = storageRef.child('images');
+        // // storage.getDownloadURL().then(res => {
+        // //     console.log(res);
+        // // });
+        // let i = [];
+        // imagesRef.listAll().then(res => {
+        //     let key = 0;
+        //     res.items.forEach(f => {
+        //         // All the items under listRef.
+        //         storage
+        //             .ref(`${f.fullPath}`)
+        //             .getDownloadURL()
+        //             .then(url => {
+        //                 console.log("Got download url: ", url);
+        //                 // <ImagesBlock url={url} />
+        //             });
+
+        //         i.push(f.fullPath);
+        //         console.log(f.fullPath)
         //     });
 
-
-        firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
-        const storageRef = storage.ref();
-        const imagesRef = storageRef.child('images');
-        // storage.getDownloadURL().then(res => {
-        //     console.log(res);
         // });
-        let i = [];
-        imagesRef.listAll().then(res => {
-            let key = 0;
-            res.items.forEach(f => {
-                // All the items under listRef.
-                storage
-                    .ref(`${f.fullPath}`)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log("Got download url: ", url);
-                        // <ImagesBlock url={url} />
-                    });
-
-                i.push(f.fullPath);
-                console.log(f.fullPath)
-            });
-
-        });
     }
 
 
@@ -72,31 +75,32 @@ class NewPost extends Component {
         }
         return (
             <div className={classes.NewPost}>
+
                 <h1>Add a Post</h1>
                 <label>Architects</label>
-                <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
+                <select value={this.state.fillContent.author} onChange={(event) => this.setState({ author: event.target.value })}>
                     <option value="Cichocka">Cichocka</option>
                     <option value="Manu">Manu</option>
                 </select>
                 <label>Location</label>
                 {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
                 <CountryDropdown
-                    value={this.state.country}
+                    value={this.state.fillContent.country}
                     onChange={(val) => this.setState({ country: val })} />
                 <br />
                 <RegionDropdown
-                    country={this.state.country}
-                    value={this.state.region}
+                    country={this.state.fillContent.country}
+                    value={this.state.fillContent.region}
                     onChange={(val) => this.setState({ region: val })} />
 
                 <label>Year</label>
-                <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
+                <select value={this.state.fillContent.author} onChange={(event) => this.setState({ author: event.target.value })}>
                     {year}
                 </select>
                 <label>Content</label>
-                <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
+                <textarea rows="4" value={this.state.fillContent.content} onChange={(event) => this.setState({ content: event.target.value })} />
 
-                <button onClick={this.postDataHandler}>Add Post</button>
+                <button onClick={this.props.onFetchNewPost}>Add Post</button>
                 {/* <CountryDropdown
                     value={country}
                     onChange={(val) => this.selectCountry(val)} />
@@ -104,10 +108,15 @@ class NewPost extends Component {
                     country={country}
                     value={region}
                     onChange={(val) => this.selectRegion(val)} /> */}
-                {this.postDataHandler}
+                {/* {this.postDataHandler} */}
             </div>
         );
     }
 }
 
-export default NewPost;
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchNewPost: () => dispatch(actions.addNewpost())
+    };
+};
+export default connect(null, mapDispatchToProps)(NewPost);
