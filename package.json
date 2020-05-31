@@ -18,7 +18,11 @@
     "babel-runtime": "6.26.0",
     "bootstrap": "^4.5.0",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
+<<<<<<< HEAD
     "chalk": "^1.1.3",
+=======
+    "chalk": "1.1.3",
+>>>>>>> 22d1336011acbe8a2e2c1d6a98a49ce7fb970708
     "css-loader": "0.28.7",
     "dotenv": "4.0.0",
     "dotenv-expand": "4.2.0",
@@ -110,9 +114,13 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+<<<<<<< HEAD
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
   "main": "index.js",
   "author": "",
   "license": "ISC"
+=======
+  }
+>>>>>>> 22d1336011acbe8a2e2c1d6a98a49ce7fb970708
 }
