@@ -15,56 +15,23 @@ import ImagesBlock from '../ImagesBlock/ImagesBlock';
 
 class NewPost extends Component {
     state = {
-        fillContent: {
             title: '',
             content: '',
             country: '',
             region: '',
             author: 'Cichocka'
-        }
     }
 
     componentDidMount() {
 
     }
-    postDataHandler = () => {
-
-
-        // const firebaseConfig = {
-        //     apiKey: "AIzaSyBot6sPtRy9jVw92sVBevsTiL0vHCJzReg",
-        //     authDomain: "cichocka-c6fc5.firebaseapp.com",
-        //     databaseURL: "https://cichocka-c6fc5.firebaseio.com",
-        //     projectId: "cichocka-c6fc5",
-        //     storageBucket: "cichocka-c6fc5.appspot.com",
-        //     messagingSenderId: "874982592562",
-        //     appId: "1:874982592562:web:45166de12b61cc2323ec2b",
-        //     measurementId: "G-1458J9ZZ5P"
-        // };
-        // firebase.initializeApp(firebaseConfig);
-        // const storage = firebase.storage();
-        // const storageRef = storage.ref();
-        // const imagesRef = storageRef.child('images');
-        // // storage.getDownloadURL().then(res => {
-        // //     console.log(res);
-        // // });
-        // let i = [];
-        // imagesRef.listAll().then(res => {
-        //     let key = 0;
-        //     res.items.forEach(f => {
-        //         // All the items under listRef.
-        //         storage
-        //             .ref(`${f.fullPath}`)
-        //             .getDownloadURL()
-        //             .then(url => {
-        //                 console.log("Got download url: ", url);
-        //                 // <ImagesBlock url={url} />
-        //             });
-
-        //         i.push(f.fullPath);
-        //         console.log(f.fullPath)
-        //     });
-
-        // });
+    submitPost = () => {
+this.props.onFetchNewPost(
+  //  this.state.title,
+    this.state.content,
+    this.state.country,
+    this.state.region,
+    this.state.author);
     }
 
 
@@ -78,29 +45,29 @@ class NewPost extends Component {
 
                 <h1>Add a Post</h1>
                 <label>Architects</label>
-                <select value={this.state.fillContent.author} onChange={(event) => this.setState({ author: event.target.value })}>
+                <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
                     <option value="Cichocka">Cichocka</option>
                     <option value="Manu">Manu</option>
                 </select>
                 <label>Location</label>
                 {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
                 <CountryDropdown
-                    value={this.state.fillContent.country}
+                    value={this.state.country}
                     onChange={(val) => this.setState({ country: val })} />
                 <br />
                 <RegionDropdown
-                    country={this.state.fillContent.country}
-                    value={this.state.fillContent.region}
+                    country={this.state.country}
+                    value={this.state.region}
                     onChange={(val) => this.setState({ region: val })} />
 
                 <label>Year</label>
-                <select value={this.state.fillContent.author} onChange={(event) => this.setState({ author: event.target.value })}>
+                <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
                     {year}
                 </select>
                 <label>Content</label>
-                <textarea rows="4" value={this.state.fillContent.content} onChange={(event) => this.setState({ content: event.target.value })} />
+                <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
 
-                <button onClick={this.props.onFetchNewPost}>Add Post</button>
+                <button onClick={this.submitPost}>Add Post</button>
                 {/* <CountryDropdown
                     value={country}
                     onChange={(val) => this.selectCountry(val)} />
@@ -116,7 +83,7 @@ class NewPost extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchNewPost: () => dispatch(actions.addNewpost())
+        onFetchNewPost: (content,country,region,author) => dispatch(actions.addNewPost(content,country,region,author))
     };
 };
 export default connect(null, mapDispatchToProps)(NewPost);
