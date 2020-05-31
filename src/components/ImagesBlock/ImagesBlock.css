@@ -1,0 +1,22 @@
+.ImagesBlock{
+    margin:40px 0 0;
+    /* border:2px solid black; */
+}
+.ImagesBlock img{
+width:500px;
+height: auto;
+margin-bottom: 40px;
+}
+.ImagesBlock p{
+    font-size: 70%;
+    left: 0;
+    text-align: left;
+    }
+
+@media(max-width:700px){
+    .ImagesBlock {
+        width:100%;
+        margin: 40px 0;
+        height: auto;
+        }
+}
