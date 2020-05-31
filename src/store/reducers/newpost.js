@@ -5,11 +5,24 @@ const initialState = {
 
 };
 
+const addNewPostStart=()=>{
+return
+};
+
+const addNewPostSuccess=()=>{
+    return
+    };
+
+ const addNewPostFail=()=>{
+        return
+        };
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        // case actionTypes.ADD_INGREDIENT: return addIngridient(state, action);
-        // case actionTypes.FETCH_INGREDIENTS_FAILED: return fetchIngredientsFailed(state, action);
-        // 
+        case actionTypes.ADD_NEW_POST_START: return addNewPostStart(state, action);
+        case actionTypes.ADD_NEW_POST_SUCCESS: return addNewPostSuccess(state, action);
+        case actionTypes.ADD_NEW_POST_FAIL: return addNewPostFail(state, action);
+
         default: return state;
     }
 };
