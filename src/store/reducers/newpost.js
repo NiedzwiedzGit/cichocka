@@ -2,20 +2,21 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 const initialState = {
-
+loading:false
 };
 
-const addNewPostStart=()=>{
-return
+
+const addNewPostStart = (state, action) => {
+    return updateObject(state, { loading: true });
 };
 
-const addNewPostSuccess=()=>{
-    return
-    };
+const addNewPostSuccess = (state, action) => {
+    return updateObject(state, { loading: false });
+};
 
- const addNewPostFail=()=>{
-        return
-        };
+const addNewPostFail = (state, action) => {
+    return updateObject(state, { loading: true });
+};
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {

@@ -7,12 +7,6 @@ import * as actions from '../../store/actions/index';
 import ImagesBlock from '../ImagesBlock/ImagesBlock';
 
 
-// import firebase from '@firebase/app';
-// //                                                                                   
-// import '@firebase/auth';
-// import '@firebase/storage';
-
-
 class NewPost extends Component {
     state = {
             title: '',
@@ -22,8 +16,8 @@ class NewPost extends Component {
             author: 'Cichocka'
     }
 
-    componentDidMount() {
-
+    componentWilUpdate() {
+        console.log('[newPost] '+this.props.loading);
     }
     submitPost = () => {
 this.props.onFetchNewPost(
@@ -40,6 +34,7 @@ this.props.onFetchNewPost(
         for (let i = 1960; i <= 2060; i++) {
             year.push(<option value={i}>{i}</option>);
         }
+
         return (
             <div className={classes.NewPost}>
 
@@ -67,7 +62,7 @@ this.props.onFetchNewPost(
                 <label>Content</label>
                 <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
 
-                <button onClick={this.submitPost}>Add Post</button>
+                {!this.props.loading?<button onClick={this.submitPost}>Add Post</button>:<label>Loading...</label>}
                 {/* <CountryDropdown
                     value={country}
                     onChange={(val) => this.selectCountry(val)} />
@@ -81,9 +76,16 @@ this.props.onFetchNewPost(
     }
 }
 
+const mapStateToProps=state=>{
+    return{
+        loading:state.newpost.loading
+    };
+}
+
+
 const mapDispatchToProps = dispatch => {
     return {
         onFetchNewPost: (content,country,region,author) => dispatch(actions.addNewPost(content,country,region,author))
     };
 };
-export default connect(null, mapDispatchToProps)(NewPost);
+export default connect(mapStateToProps, mapDispatchToProps)(NewPost);

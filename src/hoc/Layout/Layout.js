@@ -14,7 +14,7 @@ const override = css`
   position:absolut;
   left:0;
   display: block;
-  margin: 30% auto;
+  margin: 20% auto;
   border-color: red;
 `;
 
@@ -22,6 +22,7 @@ const override = css`
 class Layout extends Component {
     state = {
         showSideDrawer: false,
+        waitLoade:true
     }
     sideDrawerClosedHandler = () => {
         this.setState({ showSideDrawer: false });
@@ -33,7 +34,9 @@ class Layout extends Component {
     }
 
     render() {
-        console.log('[Leyout] ' + this.props.loading);
+        setTimeout(() => {
+            this.setState({ waitLoader: false })
+        }, 1000);
         return (
             <Aux>
                 <Toolbar
@@ -43,6 +46,13 @@ class Layout extends Component {
                     isAuth={this.props.isAuthenticated}
                     open={this.state.showSideDrawer}
                     closed={this.sideDrawerClosedHandler} />
+                    
+                    {!this.props.loading ?<CircleLoader
+        css={override}
+        size={150}
+        color={"grey"}
+        loading={this.state.waitLoader}
+    /> :null}
                 {!this.props.loading ?
                     <Main />
                     : <CircleLoader

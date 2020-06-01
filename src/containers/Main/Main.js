@@ -5,9 +5,12 @@ import ImagesBlock from '../../components/ImagesBlock/ImagesBlock';
 
 import Button from '../../components/UI/Button/Button';
 import NewPost from '../../components/NewPost/NewPost';
+import Backdrop from '../../components/UI/Backdrop/Backdrop';
 
 
 import * as actions from '../../store/actions/index';
+
+
 class Main extends Component {
     state = {
         newPost: false,
@@ -42,7 +45,7 @@ class Main extends Component {
                 this.setState({ url: this.props.imageContentFullPath })
             }, 10);
         }
-        let key = null;
+    
         const ImgBlock = this.props.imageContentFullPath.map((url, index) => {
             return <ImagesBlock key={index} url={url} />
         });
@@ -54,7 +57,10 @@ class Main extends Component {
                 <Button
                     btnType={!this.state.newPost ? "Add" : "Close"}
                     clicked={this.onAddNewPost} />
-                {this.state.newPost ? <NewPost /> : null}
+                {this.state.newPost && !this.props.loading ? <NewPost /> : null}
+                {this.state.newPost ? <Backdrop 
+                show={this.state.newPost}
+                clicked={this.onAddNewPost} /> : null}
 
                 {ImgBlock}
 
@@ -68,6 +74,7 @@ const mapStateToProps = state => {
     return {
         imageContentPath: state.main.imageContentPath,
         imageContentFullPath: state.main.imageContentFullPath,
+        loadingNewPost:state.newpost.loading
     };
 };
 const mapDispatchToProps = dispatch => {
