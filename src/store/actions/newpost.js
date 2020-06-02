@@ -20,6 +20,12 @@ export const addNewPostFail = () => {
         type: actionTypes.ADD_NEW_POST_FAIL
     };
 };
+export const animateSuccesErrorButton = () => {
+    return {
+        type: actionTypes.ADD_ANIMATE_SCS_ERR_BTN
+    };
+};
+
 
 export const addNewPost = (content, country, region, author) => {
     console.log(content, country, region, author);

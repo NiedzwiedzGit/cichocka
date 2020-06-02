@@ -28,7 +28,18 @@
     margin: auto;
 }
 
-.NewPost button {
+.Hide{
+   opacity: 0;
+   display: none;
+}
+.Show{
+    opacity: 1;
+ }
+
+ .SubmitBtn{
+     margin: 20px;
+ }
+/* .NewPost button {
     margin: 5px 0;
     padding: 10px;
     font: inherit;
@@ -42,4 +53,4 @@
 .NewPost button:active {
     color: white;
     background-color: #fa923f;
-}
+} */
