@@ -6,39 +6,42 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import ImagesBlock from '../ImagesBlock/ImagesBlock';
 
-import {storage} from '../../shared/firebase';
+import { storage } from '../../shared/firebase';
 
 import Button from '../UI/Button/Button';
+import ButtonBootstrap from 'react-bootstrap/Button';
+import PropagateLoader from "react-spinners/PropagateLoader";
 
-import Button2 from 'react-bootstrap/Button';
+import ImageUploading from "react-images-uploading";
 
+const maxNumber = 10;
+const maxMbFileSize = 6 * 1024 * 1024;
 
 class NewPost extends Component {
     state = {
-        title: '',
         content: '',
         country: '',
         region: '',
         author: '',
         btnMessage: "Success",
-        imageAsFile:null
+        imageFile: {}
     }
 
     componentWilUpdate() {
         console.log('[newPost] ' + this.props.loading);
     }
     submitPost = () => {
-        this.handleFireBaseUpload()
-        !this.props.loading && !this.props.animate ? this.props.onFetchNewPost(
-            //  this.state.title,
-            this.state.content,
-            this.state.country,
-            this.state.region,
-            this.state.author) : null;
+        if (!this.props.loading && !this.props.animate) {
+            this.props.onFetchNewPost(
+                this.state.content,
+                this.state.country,
+                this.state.region,
+                this.state.author);
+            this.handleFireBaseUpload();
+        } else null;
 
         !this.props.loading && this.props.animate ?
             this.setState({
-                title: '',
                 content: '',
                 country: '',
                 region: '',
@@ -47,53 +50,56 @@ class NewPost extends Component {
         this.props.onAnimateSuccesErrorButton();
     };
 
-     handleImageAsFile = (e) => {
-         const image = e.target.files[0];
-         console.log(image.name);
-          this.setState({imageFile :image})
-     };
-       handleFireBaseUpload = () => {
-        // e.preventDefault()
-      console.log('start of upload');
-      if(this.state.imageFile === '') {
-        console.error(`not an image, the image file is a ${typeof(imageFile)}`)
-      }
-      const uploadTask = storage.ref(`/images/${this.state.imageFile.name}`).put(this.state.imageFile);
-      //initiates the firebase side uploading 
-      uploadTask.on('state_changed', 
-      (snapShot) => {
-        //takes a snap shot of the process as it is happening
-        console.log(snapShot)
-      }, (err) => {
-        //catches the errors
-        console.log(err)
-      }, () => {
+    handleImageAsFile = (imageList) => {
+        const image = imageList;
+        this.setState({ imageFile: image })
+    };
+    handleFireBaseUpload = () => {
+        console.log('start of upload');
+        if (this.state.imageFile === '') {
+            console.error(`not an image, the image file is a ${typeof (imageFile)}`)
+        }
 
-        storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
-         .then(fireBaseUrl => {
-             console.log('[storege ref] '+fireBaseUrl);
-        //   setImageAsUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
-         })
-      })
-      }
+        Array.from(this.state.imageFile).map(img => {
+            const uploadTask = storage.ref(`/images/${img.file.name}`).put(img.file);
+        });
+        // const uploadTask = storage.ref(`/images/${this.state.imageFile.name}`).put(this.state.imageFile);
+        //initiates the firebase side uploading 
+        //     uploadTask.on('state_changed',
+        //         (snapShot) => {
+        //             //takes a snap shot of the process as it is happening
+        //             console.log(snapShot)
+        //         }, (err) => {
+        //             console.log(err)
+        //         }, () => {
+        //             storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
+        //                 .then(fireBaseUrl => {
+        //                     console.log('[storege ref] ' + fireBaseUrl);
+        //                 })
+        //         })
+    }
 
+    onChange = (imageList) => {
+        // data for submit
+        console.log('[onChange] ', imageList);
+    };
     render() {
         let year = [];
         for (let i = 1960; i <= 2060; i++) {
             year.push(<option key={i} value={i}>{i}</option>);
         }
 
-        
- 
+
+
 
         console.log('[this.props.animate] -> ' + this.props.animate);
         let animationButton = null;
         let hidePostForm = "Show";
         if (!this.props.loading && !this.props.animate) {
 
-            animationButton = <Button2
+            animationButton = <ButtonBootstrap
                 variant="outline-dark"
-                onClick={this.submitPost}>Add Post</Button2>
+                onClick={this.submitPost}>Add Post</ButtonBootstrap>
 
             if (this.state.btnMessage == "Do it again?") {
                 this.setState({ btnMessage: "Success" });
@@ -104,14 +110,16 @@ class NewPost extends Component {
                 this.setState({ btnMessage: "Do it again?" })
             }, 1000);
 
-            animationButton = <Button2
+            animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</Button2> ,
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
                 <Button
                     btnType="Success"
                 />
 
-        } else { animationButton = <label>Loading...</label> }
+        } else { animationButton = <label className={classes.Loading}><PropagateLoader /></label> }
+
+
         return (
             <div className={classes.NewPost}>
                 <div className={classes[hidePostForm]}>
@@ -139,11 +147,6 @@ class NewPost extends Component {
                     <label>Content</label>
                     <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
                     <br />
-                    <input 
-// allows you to reach into your file directory and upload image to the browser
-          type="file"
-          onChange={this.handleImageAsFile}
-        />
                 </div>
                 <Button
                     btnState={hidePostForm + 'PostForm'}
@@ -152,7 +155,34 @@ class NewPost extends Component {
                 <div className={classes.SubmitBtn}>
                     {animationButton}
                 </div>
+                <ImageUploading
+                    onChange={this.handleImageAsFile}
+                    maxNumber={maxNumber}
+                    multiple
+                    maxFileSize={maxMbFileSize}
+                    acceptType={["jpg", "gif", "png"]}
 
+                >
+                    {({ imageList, onImageUpload, onImageRemoveAll }) => (
+                        // write your building UI
+                        <div className={classes.ImgDivWraper}>
+                            <div className={classes.BtnWraper}>
+                                <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Upload images</ButtonBootstrap>{' '}
+                                <ButtonBootstrap variant="outline-danger" onClick={onImageRemoveAll}>Remove all images</ButtonBootstrap>{' '}
+                            </div>
+
+                            {imageList.map((image) => (
+                                console.log(image.file.name),
+                                < div key={image.key}
+                                    className={classes.ImgDiv}>
+                                    <img src={image.dataURL} />
+                                    <button onClick={image.onUpdate}>Update</button>
+                                    <button onClick={image.onRemove}>Remove</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </ImageUploading>
             </div >
         );
     }
