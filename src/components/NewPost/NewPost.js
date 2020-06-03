@@ -5,6 +5,9 @@ import classes from './NewPost.css';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import ImagesBlock from '../ImagesBlock/ImagesBlock';
+
+import {storage} from '../../shared/firebase';
+
 import Button from '../UI/Button/Button';
 
 import Button2 from 'react-bootstrap/Button';
@@ -17,13 +20,15 @@ class NewPost extends Component {
         country: '',
         region: '',
         author: '',
-        btnMessage: "Success"
+        btnMessage: "Success",
+        imageAsFile:null
     }
 
     componentWilUpdate() {
         console.log('[newPost] ' + this.props.loading);
     }
     submitPost = () => {
+        this.handleFireBaseUpload()
         !this.props.loading && !this.props.animate ? this.props.onFetchNewPost(
             //  this.state.title,
             this.state.content,
@@ -40,15 +45,47 @@ class NewPost extends Component {
                 author: ''
             }) : null;
         this.props.onAnimateSuccesErrorButton();
-    }
+    };
 
+     handleImageAsFile = (e) => {
+         const image = e.target.files[0];
+         console.log(image.name);
+          this.setState({imageFile :image})
+     };
+       handleFireBaseUpload = () => {
+        // e.preventDefault()
+      console.log('start of upload');
+      if(this.state.imageFile === '') {
+        console.error(`not an image, the image file is a ${typeof(imageFile)}`)
+      }
+      const uploadTask = storage.ref(`/images/${this.state.imageFile.name}`).put(this.state.imageFile);
+      //initiates the firebase side uploading 
+      uploadTask.on('state_changed', 
+      (snapShot) => {
+        //takes a snap shot of the process as it is happening
+        console.log(snapShot)
+      }, (err) => {
+        //catches the errors
+        console.log(err)
+      }, () => {
 
+        storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
+         .then(fireBaseUrl => {
+             console.log('[storege ref] '+fireBaseUrl);
+        //   setImageAsUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
+         })
+      })
+      }
 
     render() {
         let year = [];
         for (let i = 1960; i <= 2060; i++) {
             year.push(<option key={i} value={i}>{i}</option>);
         }
+
+        
+ 
+
         console.log('[this.props.animate] -> ' + this.props.animate);
         let animationButton = null;
         let hidePostForm = "Show";
@@ -101,6 +138,12 @@ class NewPost extends Component {
                     </select>
                     <label>Content</label>
                     <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
+                    <br />
+                    <input 
+// allows you to reach into your file directory and upload image to the browser
+          type="file"
+          onChange={this.handleImageAsFile}
+        />
                 </div>
                 <Button
                     btnState={hidePostForm + 'PostForm'}
