@@ -14,7 +14,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 
 import ImageUploading from "react-images-uploading";
 
-const maxNumber = 10;
+const maxNumber = 100;
 const maxMbFileSize = 6 * 1024 * 1024;
 
 class NewPost extends Component {
@@ -83,6 +83,16 @@ class NewPost extends Component {
         // data for submit
         console.log('[onChange] ', imageList);
     };
+
+    handleChangeChk=(event)=>{
+        // Array.from(event.target.name).map(ref=>{
+        //     console.log(ref);
+        // });
+        console.log(event.target.name);
+        console.log(event.target.value);
+
+console.log('[Was checked] ',event.target.name.dataURL,' = '+ event.target.checked);
+    }
     render() {
         let year = [];
         for (let i = 1960; i <= 2060; i++) {
@@ -112,7 +122,7 @@ class NewPost extends Component {
 
             animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap>,
                 <Button
                     btnType="Success"
                 />
@@ -170,16 +180,32 @@ class NewPost extends Component {
                                 <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Upload images</ButtonBootstrap>{' '}
                                 <ButtonBootstrap variant="outline-danger" onClick={onImageRemoveAll}>Remove all images</ButtonBootstrap>{' '}
                             </div>
+                            {console.log(imageList.length)}
+                            {imageList.length !== 0 ?
+                                <div className={classes.PreloaderWraper}>
+                                    {imageList.map((image) => (
+                                        console.log(image.file.name),
+                                        < div key={image.key}
+                                            className={classes.ImgDiv}>
+                                            <img src={image.dataURL} />
+                                        <input type="checkbox" name={image.dataURL} value={image.file.name} disabled onChange={this.handleChangeChk}/>
+                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
+                                                <svg className="bi bi-arrow-clockwise" width="0.9em" height="0.9em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fillRule="evenodd" d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
+                                                    <path fillRule="evenodd" d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
+                                                </svg>
+                                            </ButtonBootstrap>
 
-                            {imageList.map((image) => (
-                                console.log(image.file.name),
-                                < div key={image.key}
-                                    className={classes.ImgDiv}>
-                                    <img src={image.dataURL} />
-                                    <button onClick={image.onUpdate}>Update</button>
-                                    <button onClick={image.onRemove}>Remove</button>
-                                </div>
-                            ))}
+                                            <ButtonBootstrap variant="outline-danger" onClick={image.onRemove}>
+                                                <svg className="bi bi-trash" width="0.8em" height="0.8em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                    <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                </svg>
+
+                                            </ButtonBootstrap>
+                                        </div>
+                                    ))}
+                                </div> : null}
                         </div>
                     )}
                 </ImageUploading>
