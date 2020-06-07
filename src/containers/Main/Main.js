@@ -15,12 +15,12 @@ class Main extends Component {
     state = {
         newPost: false,
         url: [],
-        text: false
+        text: false,
+        test: null
     }
     componentDidMount() {
         this.props.onFetchContent();
-        console.log('[Main Container]', this.props.imageContentPath);
-
+        this.props.onFetchPostContent();
     };
 
     onAddNewPost = () => {
@@ -31,6 +31,25 @@ class Main extends Component {
         console.log('[NewPostAdd] ' + this.state.newPost);
     }
     render() {
+        let ImgBlock = null;
+        // if (this.props.postContent != null && this.props.imageContentFullPath != null) {
+        //     if (this.props.postContent.length != 0 && this.props.imageContentFullPath.length != 0) {
+        //         console.log('[Main Component] =>', this.props.postContent);
+        //         ImgBlock = this.props.imageContentFullPath.map((url, index) => {
+
+        //             return <ImagesBlock
+        //                 key={index}
+        //                 url={url}
+        //             // architects={this.props.postContent[index].author}
+        //             />
+        //         });
+        //         console.log('[Main Component FullPath] =>', ImgBlock);
+        //     }
+
+        //     // this.setState({ url: this.props.imageContentFullPath })
+
+        // } else null;
+
         // const cache = [];
 
         // const urlImg = require.context('../../../public/images', true, /\.png$/);
@@ -39,17 +58,30 @@ class Main extends Component {
         //     cache.push(String(key.substring(1)))
         //     a = key.substring(1);
         // });
-
-        if (this.props.imageContentPath !== null) {
-            setTimeout(() => {
-                this.setState({ url: this.props.imageContentFullPath })
-            }, 10);
-        }
-    
-        const ImgBlock = this.props.imageContentFullPath.map((url, index) => {
-            return <ImagesBlock key={index} url={url} />
+        // if (this.props.postContent != null && this.props.imageContentFullPath != null) {
+        // console.log(this.props.postContent.author)
+        ImgBlock = this.props.imageContentFullPath.map((url, index) => {
+            return <ImagesBlock
+                key={index}
+                url={url}
+            // architects={this.props.postContent.author}
+            />
         });
 
+        console.log('[Main Component] =>', this.props.postContent)
+        if (this.props.postContent != null) {
+            if (this.props.postContent.length != 0) {
+                // let Context = this.props.postContent.map(res => {
+                //     console.log(res)
+                // });
+            }
+        }
+
+        if (this.props.imageContentPath.length != 0 && this.props.loadingContent == false) {
+            // setTimeout(() => {
+            //     this.setState({ url: this.props.imageContentFullPath })
+            // }, 1000);
+        }
         return (
 
             <div className={classes.Main} >
@@ -58,11 +90,12 @@ class Main extends Component {
                     btnType={!this.state.newPost ? "Add" : "Close"}
                     clicked={this.onAddNewPost} />
                 {this.state.newPost && !this.props.loading ? <NewPost /> : null}
-                {this.state.newPost ? <Backdrop 
-                show={this.state.newPost}
-                clicked={this.onAddNewPost} /> : null}
+                {this.state.newPost ? <Backdrop
+                    show={this.state.newPost}
+                    clicked={this.onAddNewPost} /> : null}
 
                 {ImgBlock}
+
 
             </div >
         );
@@ -74,12 +107,15 @@ const mapStateToProps = state => {
     return {
         imageContentPath: state.main.imageContentPath,
         imageContentFullPath: state.main.imageContentFullPath,
-        loadingNewPost:state.newpost.loading
+        postContent: state.main.postContent,
+        loadingNewPost: state.newpost.loading,
+        loadingContent: state.main.loading
     };
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchContent: () => dispatch(actions.fetchMainContent())
+        onFetchContent: () => dispatch(actions.fetchMainContent()),
+        onFetchPostContent: () => dispatch(actions.fetchPostContent())
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

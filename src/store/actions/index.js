@@ -1,6 +1,10 @@
 export { addHeaderItem } from './header';
 
-export { fetchMainContent } from './main';
+export {
+    fetchMainContent,
+    fetchPostContent
+} from './main';
+
 
 export {
     addNewPost,

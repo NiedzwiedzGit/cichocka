@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Aux from '../Auxiliary/Auxiliary';
-import classes from './Layout.css';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 import Main from '../../containers/Main/Main';
-import axios from 'axios';
-
 import { css } from "@emotion/core";
 import CircleLoader from "react-spinners/CircleLoader";
+
+import * as actions from '../../store/actions/index';
 
 const override = css`
   position:absolut;
@@ -22,8 +21,15 @@ const override = css`
 class Layout extends Component {
     state = {
         showSideDrawer: false,
-        waitLoade:true
+        waitLoader: false,
     }
+    componentDidMount() {
+
+        console.log("test");
+        // this.props.onFetchContent();
+        // this.props.onFetchPostContent();
+    };
+
     sideDrawerClosedHandler = () => {
         this.setState({ showSideDrawer: false });
     }
@@ -32,11 +38,15 @@ class Layout extends Component {
             return { showSideDrawer: !prevState.showSideDrawer };
         });
     }
-
     render() {
-        setTimeout(() => {
-            this.setState({ waitLoader: false })
-        }, 1000);
+        console.log("test");
+        if (this.state.waitLoader) {
+            setTimeout(() => {
+                this.setState({ waitLoader: false })
+            }, 100);
+        }
+
+        console.log(!this.props.loading, !this.props.loadingContent);
         return (
             <Aux>
                 <Toolbar
@@ -46,14 +56,14 @@ class Layout extends Component {
                     isAuth={this.props.isAuthenticated}
                     open={this.state.showSideDrawer}
                     closed={this.sideDrawerClosedHandler} />
-                    
-                    {!this.props.loading ?<CircleLoader
-        css={override}
-        size={150}
-        color={"grey"}
-        loading={this.state.waitLoader}
-    /> :null}
-                {!this.props.loading ?
+
+                {!this.props.loading ? <CircleLoader
+                    css={override}
+                    size={150}
+                    color={"grey"}
+                    loading={this.state.waitLoader}
+                /> : null}
+                {!this.props.loading && !this.props.loadingContent ?
                     <Main />
                     : <CircleLoader
                         css={override}
@@ -62,10 +72,6 @@ class Layout extends Component {
                         loading={true}
                     />}
 
-
-                {/* <main className={classes.Content}>
-                    {this.props.children}
-                </main> */}
             </Aux>
         )
     }
@@ -76,8 +82,16 @@ const mapStateToProps = state => {
     return {
         imageContentPath: state.main.imageContentPath,
         loading: state.main.loading,
+        loadingContent: state.main.loadingContent,
         imageContentFullPath: state.main.imageContentFullPath,
+        postContent: state.main.postContent
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchContent: () => dispatch(actions.fetchMainContent()),
+        onFetchPostContent: () => dispatch(actions.fetchPostContent())
     };
 };
 
-export default connect(mapStateToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);
