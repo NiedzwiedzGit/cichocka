@@ -26,8 +26,8 @@ class Layout extends Component {
     componentDidMount() {
 
         console.log("test");
-        // this.props.onFetchContent();
-        // this.props.onFetchPostContent();
+        this.props.onFetchContent();
+        this.props.onFetchPostContent();
     };
 
     sideDrawerClosedHandler = () => {

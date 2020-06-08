@@ -7,7 +7,7 @@ const initialState = {
     loading: null,
     loadingContent: null,
     postContent: [],
-    mainContent: {}
+    refresh: false
 };
 
 const fetchMainContentStart = (state, action) => {
@@ -17,14 +17,11 @@ const fetchMainContentStart = (state, action) => {
 const fetchMainContentSuccess = (state, action) => {
     const path = action.path;
     const fullPath = action.fullPath;
-    //console.log(action);
-    const postContent = action.postContent
-    // console.log('[Main Reduser path.]', fullPath);
     return updateObject(state, {
         imageContentPath: path,
         imageContentFullPath: fullPath,
         loading: false,
-        postContent: postContent
+        refresh: true
     });
 };
 const fetchMainContentFail = (state, action) => {
@@ -37,8 +34,7 @@ const fetchPostContentStart = (state, action) => {
 };
 
 const fetchPostContentSuccess = (state, action) => {
-    // const postContent = action.postContent
-    // console.log('[reduser main] ', action.postContent);
+
     return updateObject(state, {
         loadingContent: false,
         postContent: action.postContent

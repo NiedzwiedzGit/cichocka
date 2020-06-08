@@ -2,13 +2,14 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 import { storage } from '../../shared/firebase';
 
-export const fetchMainContentSuccess = (path, fullPath, postContent) => {
+export const fetchMainContentSuccess = (path, fullPath) => {
+    console.log('[fetchMainContentSuccess] ');
     return {
         type: actionTypes.FETCH_MAIN_CONTENT_SUCCESS,
         path: path,
         fullPath: fullPath,
-        postContent: postContent
     };
+
 };
 export const fetchMainContentStart = () => {
     return {
@@ -25,6 +26,7 @@ export const fetchMainContentFail = (error) => {
 
 export const fetchPostContentSuccess = (postContent) => {
     console.log('[reduser mainactions] ', postContent);
+    console.log('[fetchPostContentSuccess] ');
 
     return {
         type: actionTypes.FETCH_POST_CONTENT_SUCCESS,
@@ -40,6 +42,14 @@ export const fetchPostContentFail = (error) => {
     return {
         type: actionTypes.FETCH_POST_CONTENT_FAIL,
         error: error
+    };
+};
+
+export const createMainContent = () => {
+
+    return
+    {
+        type: actionTypes.CREATE_MAIN_CONTENT_VARIABLE
     };
 };
 
@@ -67,6 +77,7 @@ export const fetchMainContent = () => {
                 // console.log(new Date().getTime())  <- for makink uniqe key
             })
             dispatch(fetchMainContentSuccess(fetchPath, fetchFullPath));
+
 
         }).catch(error => {
             dispatch(fetchMainContentFail(error));

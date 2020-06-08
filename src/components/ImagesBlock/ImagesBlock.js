@@ -9,9 +9,9 @@ const imagesBlock = (props) => {
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
                 < img src={props.url} alt="MyBurger" />
             </Link>
-            <p><strong>Architects</strong>:{props.architects}</p>
-            <p><strong>Location</strong>: Madrid, Spain</p>
-            <p><strong>Year</strong>: 2019</p>
+            <p><strong>Architects</strong>: {props.architects}</p>
+            <p><strong>Location</strong>: {props.locationCountry}, {props.locationRegion}</p>
+            <p><strong>Year</strong>: {props.year}</p>
             <p><strong>Photographs</strong>: Joaquín Mosquera Casares</p>
         </div>
     );

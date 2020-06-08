@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Suspense, Component } from 'react';
 import classes from './Main.css';
 import { connect } from 'react-redux';
 import ImagesBlock from '../../components/ImagesBlock/ImagesBlock';
@@ -22,34 +22,36 @@ class Main extends Component {
         this.props.onFetchContent();
         this.props.onFetchPostContent();
     };
+    componentDidUpdate() {
+
+    }
 
     onAddNewPost = () => {
         this.setState(prevState => {
             return { newPost: !prevState.newPost };
         })
-
-        console.log('[NewPostAdd] ' + this.state.newPost);
     }
     render() {
         let ImgBlock = null;
-        // if (this.props.postContent != null && this.props.imageContentFullPath != null) {
-        //     if (this.props.postContent.length != 0 && this.props.imageContentFullPath.length != 0) {
-        //         console.log('[Main Component] =>', this.props.postContent);
-        //         ImgBlock = this.props.imageContentFullPath.map((url, index) => {
+        if (this.props.postContent != null && this.props.imageContentFullPath != null) {
+            if (this.props.postContent.length != 0 && this.props.imageContentFullPath.length != 0) {
+                console.log('[Main Component] =>', this.props.postContent);
+                ImgBlock = this.props.imageContentFullPath.map((url, index) => {
 
-        //             return <ImagesBlock
-        //                 key={index}
-        //                 url={url}
-        //             // architects={this.props.postContent[index].author}
-        //             />
-        //         });
-        //         console.log('[Main Component FullPath] =>', ImgBlock);
-        //     }
+                    return <ImagesBlock
+                        key={index}
+                        url={url}
+                        architects={this.props.postContent[index].author}
+                        locationCountry={this.props.postContent[index].country}
+                        locationRegion={this.props.postContent[index].region}
+                        year={this.props.postContent[index].year}
 
-        //     // this.setState({ url: this.props.imageContentFullPath })
+                    />
+                });
+            }
+        } else null;
 
-        // } else null;
-
+        console.log('[Main Component FullPath] =>', ImgBlock);
         // const cache = [];
 
         // const urlImg = require.context('../../../public/images', true, /\.png$/);
@@ -60,28 +62,21 @@ class Main extends Component {
         // });
         // if (this.props.postContent != null && this.props.imageContentFullPath != null) {
         // console.log(this.props.postContent.author)
-        ImgBlock = this.props.imageContentFullPath.map((url, index) => {
-            return <ImagesBlock
-                key={index}
-                url={url}
-            // architects={this.props.postContent.author}
-            />
-        });
+        // ImgBlock = this.props.imageContentFullPath.map((url, index) => {
+        //     return <ImagesBlock
+        //         key={index}
+        //         url={url}
+        //     // architects={this.props.postContent.author}
+        //     />
+        // });
 
-        console.log('[Main Component] =>', this.props.postContent)
-        if (this.props.postContent != null) {
-            if (this.props.postContent.length != 0) {
-                // let Context = this.props.postContent.map(res => {
-                //     console.log(res)
-                // });
-            }
+        if (!this.props.loadingNewPost && !this.props.loadingContent && this.state.url.length == 0) {
+            setTimeout(() => {
+                this.setState({ url: this.props.imageContentFullPath })
+                //window.location.reload(false);
+            }, 1000);
         }
 
-        if (this.props.imageContentPath.length != 0 && this.props.loadingContent == false) {
-            // setTimeout(() => {
-            //     this.setState({ url: this.props.imageContentFullPath })
-            // }, 1000);
-        }
         return (
 
             <div className={classes.Main} >
@@ -93,9 +88,9 @@ class Main extends Component {
                 {this.state.newPost ? <Backdrop
                     show={this.state.newPost}
                     clicked={this.onAddNewPost} /> : null}
-
-                {ImgBlock}
-
+                <Suspense fallback={<div>loading</div>}>
+                    {ImgBlock}
+                </Suspense>
 
             </div >
         );
@@ -109,7 +104,8 @@ const mapStateToProps = state => {
         imageContentFullPath: state.main.imageContentFullPath,
         postContent: state.main.postContent,
         loadingNewPost: state.newpost.loading,
-        loadingContent: state.main.loading
+        loadingContent: state.main.loading,
+        refresh: state.main.refresh
     };
 };
 const mapDispatchToProps = dispatch => {
