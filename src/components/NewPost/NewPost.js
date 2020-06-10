@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { CountryDropdown, RegionDropdown /*,CountryRegionData*/ } from 'react-country-region-selector';
+import axios from '../../axios-orders';
+import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 import classes from './NewPost.css';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
+import ImagesBlock from '../ImagesBlock/ImagesBlock';
+
+import { storage } from '../../shared/firebase';
 
 import Button from '../UI/Button/Button';
 import ButtonBootstrap from 'react-bootstrap/Button';
@@ -19,7 +23,8 @@ class NewPost extends Component {
         country: '',
         region: '',
         author: '',
-        year: null,
+        year: '',
+        imgNeme:'',
         btnMessage: "Success",
         imageFile: {},
         checkBox: false,
@@ -28,7 +33,7 @@ class NewPost extends Component {
     }
 
     componentWilUpdate() {
-        // console.log('[newPost] ' + this.props.loading);
+        console.log('[newPost] ' + this.props.loading);
     }
     submitPost = () => {
         let key = null;
@@ -40,7 +45,8 @@ class NewPost extends Component {
                 this.state.author,
                 this.state.year,
                 this.state.imageFile,
-                key = new Date().getTime());
+                this.state.imgNeme,
+                key = new Date().getTime())
             // this.handleFireBaseUpload();
         } else null;
 
@@ -50,56 +56,65 @@ class NewPost extends Component {
                 country: '',
                 region: '',
                 author: '',
-                year: null
+                year: '',
+                imgNeme:''
             }) : null;
         this.props.onAnimateSuccesErrorButton();
     };
 
     handleImageAsFile = (imageList) => {
-        //  console.log(imageList.file.name);
-        Array.from(this.state.imageFile).map(ref => {
-
-        })
         const image = imageList;
         this.setState({ imageFile: image })
     };
     handleFireBaseUpload = () => {
+        // console.log('start of upload');
+        // if (this.state.imageFile === '') {
+        //     console.error(`not an image, the image file is a ${typeof (imageFile)}`)
+        // }
+
         // Array.from(this.state.imageFile).map(img => {
         //     const uploadTask = storage.ref(`/images/${img.file.name}`).put(img.file);
         // });
-        // // initiates the firebase side uploading
-        // // uploadTask.on('state_changed',
-        // //     (snapShot) => {
-        // //         //takes a snap shot of the process as it is happening
-        // //         console.log(snapShot)
-        // //     }, (err) => {
-        // //         console.log(err)
-        // //     }, () => {
-        // //         storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
-        // //             .then(fireBaseUrl => {
-        // //                 console.log('[storege ref] ' + fireBaseUrl);
-        // //             })
-        // //     })
+        // const uploadTask = storage.ref(`/images/${this.state.imageFile.name}`).put(this.state.imageFile);
+        //initiates the firebase side uploading 
+        //     uploadTask.on('state_changed',
+        //         (snapShot) => {
+        //             //takes a snap shot of the process as it is happening
+        //             console.log(snapShot)
+        //         }, (err) => {
+        //             console.log(err)
+        //         }, () => {
+        //             storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
+        //                 .then(fireBaseUrl => {
+        //                     console.log('[storege ref] ' + fireBaseUrl);
+        //                 })
+        //         })
     }
-    handleChangeChk = (event, index) => {
+
+    handleChangeChk=(event,index)=>{
+        console.log(event.target.name),
 
         this.setState(previousState => ({
-            checked: {
+            checked:{
                 ...previousState.checked,
-                [index]: !previousState.checked[index]
+                [index]:!previousState.checked[index]
             }
-        }));
-
-    }
+            }));
+        }
+    
     render() {
         const { checked } = this.state;
         const checkedCount = Object.keys(checked).filter(key => checked[key]).length;
         const disabled = checkedCount > 0;
-
         let year = [];
         for (let i = 1960; i <= 2060; i++) {
             year.push(<option key={i} value={i}>{i}</option>);
         }
+
+
+
+
+        console.log('[this.props.animate] -> ' + this.props.animate);
         let animationButton = null;
         let hidePostForm = "Show";
         if (!this.props.loading && !this.props.animate) {
@@ -119,12 +134,13 @@ class NewPost extends Component {
 
             animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap>,
                 <Button
                     btnType="Success"
                 />
 
         } else { animationButton = <label className={classes.Loading}><PropagateLoader /></label> }
+
 
         return (
             <div className={classes.NewPost}>
@@ -132,9 +148,9 @@ class NewPost extends Component {
                     <h1>Add a Post</h1>
                     <label>Architects</label>
                     <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
-                        <option key='1' value="0" >Select Author</option>
-                        <option key='2' value='Cichocka'>Cichocka</option>
-                        <option key='3' value='Manu'>Manu</option>
+                    <option key='1' value="0" >Select Author</option>
+                        <option key='2'value="Cichocka">Cichocka</option>
+                        <option key='3'value="Manu">Manu</option>
                     </select>
                     <label>Location</label>
                     {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
@@ -167,7 +183,9 @@ class NewPost extends Component {
                     maxNumber={maxNumber}
                     multiple
                     maxFileSize={maxMbFileSize}
-                    acceptType={["jpg", "gif", "png"]}>
+                    acceptType={["jpg", "gif", "png"]}
+
+                >
                     {({ imageList, onImageUpload, onImageRemoveAll }) => (
                         // write your building UI
                         <div className={classes.ImgDivWraper}>
@@ -175,12 +193,10 @@ class NewPost extends Component {
                                 <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Upload images</ButtonBootstrap>{' '}
                                 <ButtonBootstrap variant="outline-danger" onClick={onImageRemoveAll}>Remove all images</ButtonBootstrap>{' '}
                             </div>
-
+                            {console.log(imageList.length)}
                             {imageList.length !== 0 ?
                                 <div className={classes.PreloaderWraper}>
-                                    {imageList.map((image, index) => (
-                                        // console.log(image.file.name),
-                                        // console.log('[checked info] ', checked[index]),
+                                    {imageList.map((image,index) => (
                                         < div key={image.key}
                                             className={classes.ImgDiv}>
                                             <img src={image.dataURL} />
@@ -192,9 +208,8 @@ class NewPost extends Component {
                                                 value={image.dataURL}
                                                 checked={checked[index] || false}
                                                 disabled={!checked[index] && disabled}
-                                                onChange={(event) => this.handleChangeChk(event, index)} />
-
-                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
+                                                onChange={(event) => this.handleChangeChk(event, index)} 
+                                                />                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
                                                 <svg className="bi bi-arrow-clockwise" width="0.9em" height="0.9em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                     <path fillRule="evenodd" d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
                                                     <path fillRule="evenodd" d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
@@ -214,7 +229,6 @@ class NewPost extends Component {
                         </div>
                     )}
                 </ImageUploading>
-
             </div >
         );
     }

@@ -90,8 +90,12 @@ export const fetchMainContent = () => {
 export const fetchPostContent = () => {
     return dispatch => {
         dispatch(() => fetchPostContentStart());
+        axios.get('/xxxx.json')
+        .then(response => {
+            console.log(response)
+         })
         axios.get('/newposts.json')
-            .then(response => {
+            .then(response => { 
                 const fetchOrders = [];
                 for (let key in response.data) {
                     fetchOrders.push({
@@ -99,7 +103,7 @@ export const fetchPostContent = () => {
                         id: key
                     });
                 }
-                //console.log(fetchOrders);
+                console.log(fetchOrders.id);
 
                 dispatch(fetchPostContentSuccess(fetchOrders));
                 // console.log(response.data[key]);
@@ -108,4 +112,21 @@ export const fetchPostContent = () => {
             });
 
     };
+};
+
+export const deletePost=(id,imgName)=>{
+    console.log('[you want delete]=>',id)
+    console.log('[you want delete imageContentPath]=>',imgName)
+    return dispatch=>{
+        axios.delete(`/newposts/${id}.json`,{data:{imgName:imgName}}).then(response => {
+            console.log(response);
+          });
+            storage.ref(`/images/${imgName}?key=${id}`).delete();
+            console.log('[you want delete path',`/images/${imgName}?key=${id}`)
+            // console.log(uploadTask)
+        
+    };
+    // storage.ref(`/images/${img.file.name}?key=${response.data.name}`).remove();
+    // userRef.remove()
+    // const uploadTask = storage.ref(`/images/${img.file.name}?key=${response.data.name}`).put(img.file);
 };

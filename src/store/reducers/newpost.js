@@ -3,7 +3,8 @@ import { updateObject } from '../../shared/utility';
 
 const initialState = {
     loading: false,
-    animate: false
+    animate: false,
+    imageFile:null
 };
 
 
@@ -12,7 +13,7 @@ const addNewPostStart = (state, action) => {
 };
 
 const addNewPostSuccess = (state, action) => {
-    return updateObject(state, { loading: false });
+    return updateObject(state, { loading: false, imageFile:action.imageFile });
 };
 
 

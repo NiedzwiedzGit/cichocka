@@ -8,10 +8,11 @@ export const addNewPostStart = () => {
         type: actionTypes.ADD_NEW_POST_START
     };
 };
-export const addNewPostSuccess = () => {
+export const addNewPostSuccess = (imageFile) => {
     console.log("addNewPostSuccess");
     return {
-        type: actionTypes.ADD_NEW_POST_SUCCESS
+        type: actionTypes.ADD_NEW_POST_SUCCESS,
+imageFile:imageFile
     };
 };
 
@@ -29,9 +30,14 @@ export const animateSuccesErrorButton = () => {
 
 
 export const addNewPost = (content, country, region, author, year, imageFile, key) => {
-    console.log(content, country, region, author, year);
+    console.log(content, country, region, author, year, key);
+    console.log('-----',imageFile)
     return dispatch => {
         dispatch(addNewPostStart());
+        let imgName='';
+        Array.from(imageFile).map(img => {
+             imgName = img.file.name;
+        });
         const data = {
             // title: this.state.title,
             content: content,
@@ -39,21 +45,29 @@ export const addNewPost = (content, country, region, author, year, imageFile, ke
             region: region,
             author: author,
             year: year,
-            key: key
+            key: key,
+            imgName:imgName
+            // imageNeme:imageFile.
         };
-        axios.post('/newposts.json', data)
+        console.log(data);
+        axios.post(`/newposts.json`,data)
             .then(response => {
-                dispatch(addNewPostSuccess());
-                // console.log(response);
+                dispatch(addNewPostSuccess(imageFile));
+                 //console.log('---------', response);
                 // console.log("Data post on server");
+                Array.from(imageFile).map(img => {
+                 storage.ref(`/images/${img.file.name}?key=${response.data.name}`).put(img.file);
+                });
+            //     Array.from(imageFile).map(img => {
+            //         axios.post(`/images/${img.file.name}?key=${response.data.name}`,img.file)
+            // .then(response => {});
+            //     });
             })
             .catch(err => {
                 dispatch(addNewPostFail())
             }
             );
-        Array.from(imageFile).map(img => {
-            const uploadTask = storage.ref(`/images/${img.file.name}?key=${key}`).put(img.file);
-        });
+   
         // initiates the firebase side uploading
         // uploadTask.on('state_changed',
         //     (snapShot) => {

@@ -45,13 +45,13 @@ class Main extends Component {
                         locationCountry={this.props.postContent[index].country}
                         locationRegion={this.props.postContent[index].region}
                         year={this.props.postContent[index].year}
-
+                        clicked={()=>this.props.onDeletePost(this.props.postContent[index].id,this.props.postContent[index].imgName)}
                     />
                 });
             }
         } else null;
 
-        console.log('[Main Component FullPath] =>', ImgBlock);
+        console.log('[Main Component FullPath]---------- =>', this.props.imageContentPath);
         // const cache = [];
 
         // const urlImg = require.context('../../../public/images', true, /\.png$/);
@@ -104,6 +104,7 @@ const mapStateToProps = state => {
         imageContentFullPath: state.main.imageContentFullPath,
         postContent: state.main.postContent,
         loadingNewPost: state.newpost.loading,
+        imageFile: state.newpost.imageFile,
         loadingContent: state.main.loading,
         refresh: state.main.refresh
     };
@@ -111,7 +112,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
-        onFetchPostContent: () => dispatch(actions.fetchPostContent())
+        onFetchPostContent: () => dispatch(actions.fetchPostContent()),
+        onDeletePost:(id,imgName)=>dispatch(actions.deletePost(id,imgName))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
