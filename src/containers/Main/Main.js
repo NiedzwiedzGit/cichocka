@@ -4,13 +4,19 @@ import { connect } from 'react-redux';
 import ImagesBlock from '../../components/ImagesBlock/ImagesBlock';
 
 import Button from '../../components/UI/Button/Button';
-import NewPost from '../../components/NewPost/NewPost';
+import NewPost from '../NewPost/NewPost';
 import Backdrop from '../../components/UI/Backdrop/Backdrop';
 
-
+import CircleLoader from "react-spinners/CircleLoader";
+import { css } from "@emotion/core";
 import * as actions from '../../store/actions/index';
-
-
+const override = css`
+  position:absolut;
+  left:0;
+  display: block;
+  margin: 20% auto;
+  border-color: red;
+`;
 class Main extends Component {
     state = {
         newPost: false,
@@ -18,21 +24,28 @@ class Main extends Component {
         text: false,
         test: null
     }
+
     componentDidMount() {
-        this.props.onFetchContent();
-        this.props.onFetchPostContent();
+        // this.props.onFetchContent();
+        // this.props.onFetchPostContent();
+
     };
     componentDidUpdate() {
-
+        if (!this.props.loadingNewPost && !this.props.loadingContent && this.state.url.length == 0) {
+            setTimeout(() => {
+                this.setState({ url: this.props.imageContentFullPath })
+                //window.location.reload(false);
+            }, 1000);
+        }
     }
 
-    onAddNewPost = () => {
-        this.setState(prevState => {
-            return { newPost: !prevState.newPost };
-        })
-    }
-    render() {
-        let ImgBlock = null;
+    onLoadContent = () => {
+        let ImgBlock = <CircleLoader
+            css={override}
+            size={150}
+            color={"grey"}
+            loading={this.state.waitLoader}
+        />;
         if (this.props.postContent != null && this.props.imageContentFullPath != null) {
             if (this.props.postContent.length != 0 && this.props.imageContentFullPath.length != 0) {
                 console.log('[Main Component] =>', this.props.postContent);
@@ -45,38 +58,21 @@ class Main extends Component {
                         locationCountry={this.props.postContent[index].country}
                         locationRegion={this.props.postContent[index].region}
                         year={this.props.postContent[index].year}
-                        clicked={()=>this.props.onDeletePost(this.props.postContent[index].id,this.props.postContent[index].imgName)}
+                        clicked={() => this.props.onDeletePost(this.props.postContent[index].id, this.props.postContent[index].imgName)}
                     />
                 });
             }
         } else null;
 
-        console.log('[Main Component FullPath]---------- =>', this.props.imageContentPath);
-        // const cache = [];
-
-        // const urlImg = require.context('../../../public/images', true, /\.png$/);
-        // let a = null;
-        // urlImg.keys().map(key => {
-        //     cache.push(String(key.substring(1)))
-        //     a = key.substring(1);
-        // });
-        // if (this.props.postContent != null && this.props.imageContentFullPath != null) {
-        // console.log(this.props.postContent.author)
-        // ImgBlock = this.props.imageContentFullPath.map((url, index) => {
-        //     return <ImagesBlock
-        //         key={index}
-        //         url={url}
-        //     // architects={this.props.postContent.author}
-        //     />
-        // });
-
-        if (!this.props.loadingNewPost && !this.props.loadingContent && this.state.url.length == 0) {
-            setTimeout(() => {
-                this.setState({ url: this.props.imageContentFullPath })
-                //window.location.reload(false);
-            }, 1000);
-        }
-
+        return ImgBlock;
+    }
+    onAddNewPost = () => {
+        this.setState(prevState => {
+            return { newPost: !prevState.newPost };
+        })
+        return
+    }
+    render() {
         return (
 
             <div className={classes.Main} >
@@ -89,7 +85,7 @@ class Main extends Component {
                     show={this.state.newPost}
                     clicked={this.onAddNewPost} /> : null}
                 <Suspense fallback={<div>loading</div>}>
-                    {ImgBlock}
+                    {this.onLoadContent()}
                 </Suspense>
 
             </div >
@@ -113,7 +109,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
-        onDeletePost:(id,imgName)=>dispatch(actions.deletePost(id,imgName))
+        onDeletePost: (id, imgName) => dispatch(actions.deletePost(id, imgName))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

@@ -24,7 +24,6 @@ class Layout extends Component {
         waitLoader: false,
     }
     componentDidMount() {
-
         console.log("test");
         this.props.onFetchContent();
         this.props.onFetchPostContent();
@@ -38,13 +37,13 @@ class Layout extends Component {
             return { showSideDrawer: !prevState.showSideDrawer };
         });
     }
+
     render() {
-        console.log("test");
-        if (this.state.waitLoader) {
-            setTimeout(() => {
-                this.setState({ waitLoader: false })
-            }, 100);
-        }
+        // if (this.state.waitLoader) {
+        //     setTimeout(() => {
+        //         this.setState({ waitLoader: false })
+        //     }, 100);
+        // }
 
         console.log(!this.props.loading, !this.props.loadingContent);
         return (

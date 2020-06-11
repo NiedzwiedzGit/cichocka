@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import axios from '../../axios-orders';
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 import classes from './NewPost.css';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
-import ImagesBlock from '../ImagesBlock/ImagesBlock';
-
-import { storage } from '../../shared/firebase';
-
-import Button from '../UI/Button/Button';
+import Button from '../../components/UI/Button/Button';
 import ButtonBootstrap from 'react-bootstrap/Button';
 import PropagateLoader from "react-spinners/PropagateLoader";
 
@@ -24,7 +19,7 @@ class NewPost extends Component {
         region: '',
         author: '',
         year: '',
-        imgNeme:'',
+        imgNeme: '',
         btnMessage: "Success",
         imageFile: {},
         checkBox: false,
@@ -57,14 +52,13 @@ class NewPost extends Component {
                 region: '',
                 author: '',
                 year: '',
-                imgNeme:''
+                imgNeme: ''
             }) : null;
         this.props.onAnimateSuccesErrorButton();
     };
 
     handleImageAsFile = (imageList) => {
-        const image = imageList;
-        this.setState({ imageFile: image })
+        this.setState({ imageFile: imageList })
     };
     handleFireBaseUpload = () => {
         // console.log('start of upload');
@@ -91,17 +85,17 @@ class NewPost extends Component {
         //         })
     }
 
-    handleChangeChk=(event,index)=>{
+    handleChangeChk = (event, index) => {
         console.log(event.target.name),
 
-        this.setState(previousState => ({
-            checked:{
-                ...previousState.checked,
-                [index]:!previousState.checked[index]
-            }
+            this.setState(previousState => ({
+                checked: {
+                    ...previousState.checked,
+                    [index]: !previousState.checked[index]
+                }
             }));
-        }
-    
+    }
+
     render() {
         const { checked } = this.state;
         const checkedCount = Object.keys(checked).filter(key => checked[key]).length;
@@ -134,7 +128,7 @@ class NewPost extends Component {
 
             animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap>,
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
                 <Button
                     btnType="Success"
                 />
@@ -148,9 +142,9 @@ class NewPost extends Component {
                     <h1>Add a Post</h1>
                     <label>Architects</label>
                     <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
-                    <option key='1' value="0" >Select Author</option>
-                        <option key='2'value="Cichocka">Cichocka</option>
-                        <option key='3'value="Manu">Manu</option>
+                        <option key='1' value="0" >Select Author</option>
+                        <option key='2' value="Cichocka">Cichocka</option>
+                        <option key='3' value="Manu">Manu</option>
                     </select>
                     <label>Location</label>
                     {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
@@ -196,7 +190,7 @@ class NewPost extends Component {
                             {console.log(imageList.length)}
                             {imageList.length !== 0 ?
                                 <div className={classes.PreloaderWraper}>
-                                    {imageList.map((image,index) => (
+                                    {imageList.map((image, index) => (
                                         < div key={image.key}
                                             className={classes.ImgDiv}>
                                             <img src={image.dataURL} />
@@ -208,8 +202,8 @@ class NewPost extends Component {
                                                 value={image.dataURL}
                                                 checked={checked[index] || false}
                                                 disabled={!checked[index] && disabled}
-                                                onChange={(event) => this.handleChangeChk(event, index)} 
-                                                />                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
+                                                onChange={(event) => this.handleChangeChk(event, index)}
+                                            />                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
                                                 <svg className="bi bi-arrow-clockwise" width="0.9em" height="0.9em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                     <path fillRule="evenodd" d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
                                                     <path fillRule="evenodd" d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
