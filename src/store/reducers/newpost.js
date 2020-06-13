@@ -4,7 +4,8 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     loading: false,
     animate: false,
-    imageFile:null
+    imageFile:null,
+    addNewPostContainer:false
 };
 
 
@@ -13,7 +14,7 @@ const addNewPostStart = (state, action) => {
 };
 
 const addNewPostSuccess = (state, action) => {
-    return updateObject(state, { loading: false, imageFile:action.imageFile });
+    return updateObject(state, { loading: false, imageFile:action.imageFile});
 };
 
 
@@ -24,6 +25,9 @@ const addNewPostFail = (state, action) => {
 const animateSuccesErrorButton = (state, action) => {
     return updateObject(state, { animate: !state.animate });
 }
+const addNewPostContainerHandler=(state, action)=>{ 
+    return updateObject(state, { addNewPostContainer: !state.addNewPostContainer });
+}
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -31,6 +35,8 @@ const reducer = (state = initialState, action) => {
         case actionTypes.ADD_NEW_POST_SUCCESS: return addNewPostSuccess(state, action);
         case actionTypes.ADD_NEW_POST_FAIL: return addNewPostFail(state, action);
         case actionTypes.ADD_ANIMATE_SCS_ERR_BTN: return animateSuccesErrorButton(state, action);
+        case actionTypes.ADD_NEW_POST_CONTAINER: return addNewPostContainerHandler(state, action);
+
 
         default: return state;
     }

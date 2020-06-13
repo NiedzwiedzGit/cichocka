@@ -19,7 +19,6 @@ const override = css`
 `;
 class Main extends Component {
     state = {
-        newPost: false,
         url: [],
         text: false,
         test: null
@@ -48,9 +47,9 @@ class Main extends Component {
         />;
         if (this.props.postContent != null && this.props.imageContentFullPath != null) {
             if (this.props.postContent.length != 0 && this.props.imageContentFullPath.length != 0) {
-                console.log('[Main Component] =>', this.props.postContent);
+                console.log('[Main Component] =>', this.props.imageContentFullPath);
                 ImgBlock = this.props.imageContentFullPath.map((url, index) => {
-
+                   // console.log('[Main Component index] =>', index);
                     return <ImagesBlock
                         key={index}
                         url={url}
@@ -58,7 +57,13 @@ class Main extends Component {
                         locationCountry={this.props.postContent[index].country}
                         locationRegion={this.props.postContent[index].region}
                         year={this.props.postContent[index].year}
-                        clicked={() => this.props.onDeletePost(this.props.postContent[index].id, this.props.postContent[index].imgName)}
+                        clicked={() => this.props.onDeletePost(this.props.postContent[index].id, this.props.postContent[index].imgName, this.props.postContent[index].key)}
+                        clickedUpdate={()=>this.props.onAddNewPost(
+                            this.props.postContent[index].author,
+                            this.props.postContent[index].country,
+                            this.props.postContent[index].region,
+                            this.props.postContent[index].year,
+                            this.props.postContent[index].key)}
                     />
                 });
             }
@@ -66,24 +71,18 @@ class Main extends Component {
 
         return ImgBlock;
     }
-    onAddNewPost = () => {
-        this.setState(prevState => {
-            return { newPost: !prevState.newPost };
-        })
-        return
-    }
     render() {
         return (
 
             <div className={classes.Main} >
 
                 <Button
-                    btnType={!this.state.newPost ? "Add" : "Close"}
-                    clicked={this.onAddNewPost} />
-                {this.state.newPost && !this.props.loading ? <NewPost /> : null}
-                {this.state.newPost ? <Backdrop
-                    show={this.state.newPost}
-                    clicked={this.onAddNewPost} /> : null}
+                    btnType={!this.props.addNewPostContainer ? "Add" : "Close"}
+                    clicked={this.props.onAddNewPost} />
+                {this.props.addNewPostContainer && !this.props.loading ? <NewPost /> : null}
+                {this.props.addNewPostContainer ? <Backdrop
+                    show={this.props.addNewPostContainer}
+                    clicked={this.props.onAddNewPost} /> : null}
                 <Suspense fallback={<div>loading</div>}>
                     {this.onLoadContent()}
                 </Suspense>
@@ -101,6 +100,7 @@ const mapStateToProps = state => {
         postContent: state.main.postContent,
         loadingNewPost: state.newpost.loading,
         imageFile: state.newpost.imageFile,
+        addNewPostContainer: state.newpost.addNewPostContainer,
         loadingContent: state.main.loading,
         refresh: state.main.refresh
     };
@@ -109,7 +109,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
-        onDeletePost: (id, imgName) => dispatch(actions.deletePost(id, imgName))
+        onDeletePost: (id, imgName,key) => dispatch(actions.deletePost(id, imgName,key)),
+        onAddNewPost:()=>dispatch(actions.addNewPostContainer())
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

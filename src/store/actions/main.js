@@ -1,9 +1,9 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 import { storage } from '../../shared/firebase';
+import AxiosStorage from 'axios-storage';
 
 export const fetchMainContentSuccess = (path, fullPath) => {
-    console.log('[fetchMainContentSuccess] ');
     return {
         type: actionTypes.FETCH_MAIN_CONTENT_SUCCESS,
         path: path,
@@ -64,17 +64,13 @@ export const fetchMainContent = () => {
 
         imagesRef.listAll().then(res => {
             res.items.forEach(f => {
-                // All the items under listRef.
                 storage
                     .ref(`${f.fullPath}`)
                     .getDownloadURL()
                     .then(url => {
                         fetchFullPath.push(url.toString());
-                        // console.log("Got download url: ", url);
                     });
                 fetchPath.push(f.fullPath.toString());
-                // console.log(f.fullPath);
-                // console.log(new Date().getTime())  <- for makink uniqe key
             })
             dispatch(fetchMainContentSuccess(fetchPath, fetchFullPath));
 
@@ -90,9 +86,9 @@ export const fetchMainContent = () => {
 export const fetchPostContent = () => {
     return dispatch => {
         dispatch(() => fetchPostContentStart());
-        axios.get('/xxxx.json')
+        axios.get('storage/images/.json')
         .then(response => {
-            console.log(response)
+            console.log("------",response)
          })
         axios.get('/newposts.json')
             .then(response => { 
@@ -103,7 +99,7 @@ export const fetchPostContent = () => {
                         id: key
                     });
                 }
-                console.log(fetchOrders.id);
+                console.log("+++++++++++++++++",fetchOrders);
 
                 dispatch(fetchPostContentSuccess(fetchOrders));
                 // console.log(response.data[key]);
@@ -114,15 +110,15 @@ export const fetchPostContent = () => {
     };
 };
 
-export const deletePost=(id,imgName)=>{
+export const deletePost=(id,imgName,key)=>{
     console.log('[you want delete]=>',id)
     console.log('[you want delete imageContentPath]=>',imgName)
     return dispatch=>{
         axios.delete(`/newposts/${id}.json`,{data:{imgName:imgName}}).then(response => {
             console.log(response);
           });
-            storage.ref(`/images/${imgName}?key=${id}`).delete();
-            console.log('[you want delete path',`/images/${imgName}?key=${id}`)
+            storage.ref(`/images/${imgName}?key=${key}`).delete();
+            console.log('[you want delete path',`/images/${imgName}?key=${key}`)
             // console.log(uploadTask)
         
     };

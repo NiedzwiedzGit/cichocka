@@ -9,7 +9,7 @@ export const addNewPostStart = () => {
     };
 };
 export const addNewPostSuccess = (imageFile) => {
-    console.log("addNewPostSuccess");
+    console.log("addNewPostSuccess",imageFile);
     return {
         type: actionTypes.ADD_NEW_POST_SUCCESS,
 imageFile:imageFile
@@ -23,45 +23,46 @@ export const addNewPostFail = () => {
     };
 };
 export const animateSuccesErrorButton = () => {
+    console.log('testt loader loop');
     return {
         type: actionTypes.ADD_ANIMATE_SCS_ERR_BTN
     };
 };
 
 
-export const addNewPost = (content, country, region, author, year, imageFile, key) => {
-    console.log(content, country, region, author, year, key);
-    console.log('-----',imageFile)
+export const addNewPost = (formData) => {
+    console.log(formData);
+    // console.log('checking wher is key = ',postKey);
+    // console.log('-----',imageFile)
     return dispatch => {
         dispatch(addNewPostStart());
         let imgName='';
-        Array.from(imageFile).map(img => {
+        Array.from(formData.imageFile).map(img => {
              imgName = img.file.name;
         });
         const data = {
             // title: this.state.title,
-            content: content,
-            country: country,
-            region: region,
-            author: author,
-            year: year,
-            key: key,
+            // country: country,
+            // region: region,
+            location:formData.street,
+            author:formData.author,
+            architecture:formData.architecture,
+            year: formData.year,
+            key: formData.key,
             imgName:imgName
             // imageNeme:imageFile.
         };
         console.log(data);
         axios.post(`/newposts.json`,data)
             .then(response => {
-                dispatch(addNewPostSuccess(imageFile));
-                 //console.log('---------', response);
+                dispatch(addNewPostSuccess(formData.imageFile));
+                 console.log('---------', data.key);
                 // console.log("Data post on server");
-                Array.from(imageFile).map(img => {
-                 storage.ref(`/images/${img.file.name}?key=${response.data.name}`).put(img.file);
+                Array.from(formData.imageFile).map(img => {
+                 storage.ref(`/images/${img.file.name}?key=${data.key}`).put(img.file);
                 });
-            //     Array.from(imageFile).map(img => {
-            //         axios.post(`/images/${img.file.name}?key=${response.data.name}`,img.file)
-            // .then(response => {});
-            //     });
+                //  .then(response => {});
+
             })
             .catch(err => {
                 dispatch(addNewPostFail())
@@ -84,4 +85,9 @@ export const addNewPost = (content, country, region, author, year, imageFile, ke
     };
 };
 
+export const addNewPostContainer=()=>{
+    return {
+        type:actionTypes.ADD_NEW_POST_CONTAINER
+    }
+}
 

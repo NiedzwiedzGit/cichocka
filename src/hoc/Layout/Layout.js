@@ -63,7 +63,7 @@ class Layout extends Component {
                     loading={this.state.waitLoader}
                 /> : null}
                 {!this.props.loading && !this.props.loadingContent ?
-                    <Main />
+                    <Main >{this.props.children}</Main>
                     : <CircleLoader
                         css={override}
                         size={150}

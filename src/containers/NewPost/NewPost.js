@@ -7,54 +7,160 @@ import Button from '../../components/UI/Button/Button';
 import ButtonBootstrap from 'react-bootstrap/Button';
 import PropagateLoader from "react-spinners/PropagateLoader";
 
+import { updateObject, checkValidity } from '../../shared/utility';
+import Input from '../../components/UI/Input/Input'; 
+
 import ImageUploading from "react-images-uploading";
 
 const maxNumber = 100;
 const maxMbFileSize = 6 * 1024 * 1024;
 
 class NewPost extends Component {
+
     state = {
-        content: '',
-        country: '',
-        region: '',
-        author: '',
-        year: '',
+        orderForm: {
+            architecture: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Author'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            author: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Photographs'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            street: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Location'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            year: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'number',
+                    placeholder: 'Year'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 4,
+                    maxLength: 4,
+                    isNumeric: true
+                },
+                valid: false,
+                touched: false
+            },
+            // country: {
+            //     elementType: 'input',
+            //     elementConfig: {
+            //         type: 'text',
+            //         placeholder: 'Country'
+            //     },
+            //     value: '',
+            //     validation: {
+            //         required: true
+            //     },
+            //     valid: false,
+            //     touched: false
+            // },
+            // email: {
+            //     elementType: 'input',
+            //     elementConfig: {
+            //         type: 'email',
+            //         placeholder: 'Your E-Mail'
+            //     },
+            //     value: '',
+            //     validation: {
+            //         required: true,
+            //         isEmail: true
+            //     },
+            //     valid: false,
+            //     touched: false
+            // },
+            // deliveryMethod: {
+            //     elementType: 'select',
+            //     elementConfig: {
+            //         options:[
+            //             { value: 'fastest', displayValue: 'Fastest' },
+            //             { value: 'cheapest', displayValue: 'Cheapest' }
+            //         ]
+            //     },
+            //     value: '1960',
+            //     validation: {},
+            //     valid: true
+            // }
+        },
+        // formIsValid: false,
+        // content: '',
+        // country: '',
+        // region: '',
+        // author: '',
+        // year: '',
         imgNeme: '',
         btnMessage: "Success",
         imageFile: {},
         checkBox: false,
         checked: {},
-        sAuthorMassage: true
+        sAuthorMassage: true,
+        update:this.props.update
     }
 
-    componentWilUpdate() {
-        console.log('[newPost] ' + this.props.loading);
-    }
     submitPost = () => {
-        let key = null;
-        if (!this.props.loading && !this.props.animate) {
-            this.props.onFetchNewPost(
-                this.state.content,
-                this.state.country,
-                this.state.region,
-                this.state.author,
-                this.state.year,
-                this.state.imageFile,
-                this.state.imgNeme,
-                key = new Date().getTime())
-            // this.handleFireBaseUpload();
-        } else null;
 
-        !this.props.loading && this.props.animate ?
-            this.setState({
-                content: '',
-                country: '',
-                region: '',
-                author: '',
-                year: '',
-                imgNeme: ''
-            }) : null;
-        this.props.onAnimateSuccesErrorButton();
+
+
+
+
+        // let postKey = new Date().getTime();
+        // postKey.toString();
+        // // console.log('checking wher is key = ',key);
+        // if (!this.props.loading && !this.props.animate) {
+        //     this.props.onFetchNewPost(
+        //         this.state.content,
+        //         this.state.country,
+        //         this.state.region,
+        //         this.state.author,
+        //         this.state.year,
+        //         this.state.imageFile,
+        //         //this.state.imgNeme,
+        //         postKey)
+        //     // this.handleFireBaseUpload();
+        // } else null;
+
+        // !this.props.loading && this.props.animate ?
+        //     this.setState({
+        //         content: '',
+        //         country: '',
+        //         region: '',
+        //         author: '',
+        //         year: '',
+        //         imgNeme: ''
+        //     }) : null;
+      //  this.props.onAnimateSuccesErrorButton();
     };
 
     handleImageAsFile = (imageList) => {
@@ -96,26 +202,84 @@ class NewPost extends Component {
             }));
     }
 
-    render() {
-        const { checked } = this.state;
-        const checkedCount = Object.keys(checked).filter(key => checked[key]).length;
-        const disabled = checkedCount > 0;
-        let year = [];
-        for (let i = 1960; i <= 2060; i++) {
-            year.push(<option key={i} value={i}>{i}</option>);
+    submitPost = (event) => {
+        if (!this.props.loading && !this.props.animate) {
+        event.preventDefault();
+        let formData = {};
+        for (let formElementIdentifier in this.state.orderForm) {
+            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
+        formData['imageFile']=this.state.imageFile;
 
+        let postKey = new Date().getTime();
+        postKey.toString();
+        formData['key']=postKey;
+        // const order = {
+        //     ingredients: this.props.ings,
+        //     price: this.props.price,
+        //     orderData: formData,
+        //     userId: this.props.userId
+        // }
+        // this.props.onOrderBurger(order, this.props.token);
+                this.props.onFetchNewPost(formData)
+            } else this.resetForm();
+               this.props.onAnimateSuccesErrorButton();
+    }
 
+resetForm=()=>{
+    const formElementsArray = [];
+    for (let key in this.state.orderForm) {
+        formElementsArray.push({
+            id: key,
+            config: this.state.orderForm[key]
+        });
+    }
+    let newState={};
+    formElementsArray.map(formElement => (
+        newState=updateObject(this.state.orderForm[formElement.id], {
+            value:'',
+            valid: false,
+            touched: false
+        })
+    ))
+    this.setState({orderForm:newState});
+    console.log('test reseting/////',this.state.orderForm)
+}
+    inputChangedHandler = (event, inputIdentifier,imageList) => {
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: !this.props.loading && this.props.animate? '': event.target.value,
+            valid: !this.props.loading && this.props.animate?false:checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: !this.props.loading && this.props.animate?false:true
+        });
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputIdentifier]: updatedFormElement
+        });
 
+        let formIsValid = true;
+        for (let inputIdentifier in updatedOrderForm) {
+            formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+        }
+        this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid,imageFile:imageList });
+    }
 
-        console.log('[this.props.animate] -> ' + this.props.animate);
+    render() {
+
+        const formElementsArray = [];
+        for (let key in this.state.orderForm) {
+            formElementsArray.push({
+                id: key,
+                config: this.state.orderForm[key]
+            });
+        }
         let animationButton = null;
         let hidePostForm = "Show";
         if (!this.props.loading && !this.props.animate) {
 
             animationButton = <ButtonBootstrap
                 variant="outline-dark"
-                onClick={this.submitPost}>Add Post</ButtonBootstrap>
+                onClick={this.submitPost}
+                disabled={!this.state.formIsValid}>
+                   { this.state.formIsValid?"Add Post":"Fill all field"}</ButtonBootstrap>
 
             if (this.state.btnMessage == "Do it again?") {
                 this.setState({ btnMessage: "Success" });
@@ -130,44 +294,29 @@ class NewPost extends Component {
                 variant="success"
                 onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
                 <Button
-                    btnType="Success"
-                />
+                    btnType="Success"/>
 
         } else { animationButton = <label className={classes.Loading}><PropagateLoader /></label> }
-
-
-        return (
-            <div className={classes.NewPost}>
+        let form = (
+            <form onSubmit={this.submitPost} >
                 <div className={classes[hidePostForm]}>
-                    <h1>Add a Post</h1>
-                    <label>Architects</label>
-                    <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
-                        <option key='1' value="0" >Select Author</option>
-                        <option key='2' value="Cichocka">Cichocka</option>
-                        <option key='3' value="Manu">Manu</option>
-                    </select>
-                    <label>Location</label>
-                    {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
-                    <CountryDropdown
-                        value={this.state.country}
-                        onChange={(val) => this.setState({ country: val })} />
-                    <br />
-                    <RegionDropdown
-                        country={this.state.country}
-                        value={this.state.region}
-                        onChange={(val) => this.setState({ region: val })} />
-
-                    <label>Year</label>
-                    <select value={this.state.year} onChange={(event) => this.setState({ year: event.target.value })}>
-                        {year}
-                    </select>
-                    <label>Content</label>
-                    <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
-                    <br />
+                {formElementsArray.map(formElement => (
+                    <Input
+                        key={formElement.id}
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.value}
+                        invalid={!formElement.config.valid}
+                        shouldValidate={formElement.config.validation}
+                        touched={formElement.config.touched}
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)} />
+                ))}
                 </div>
+                {/* <Button btnType="Success" disabled={!this.state.formIsValid}></Button> */}
                 <Button
                     btnState={hidePostForm + 'PostForm'}
                     btnType="Success"
+                   
                 />
                 <div className={classes.SubmitBtn}>
                     {animationButton}
@@ -223,6 +372,57 @@ class NewPost extends Component {
                         </div>
                     )}
                 </ImageUploading>
+            </form>
+        );
+
+        /////////////
+        const { checked } = this.state;
+        const checkedCount = Object.keys(checked).filter(key => checked[key]).length;
+        const disabled = checkedCount > 0;
+        let year = [];
+        for (let i = 1960; i <= 2060; i++) {
+            year.push(<option key={i} value={i}>{i}</option>);
+        }
+
+
+
+
+        console.log('[this.props.animate] -> ' + this.props.animate);
+       
+
+
+        return (
+            <div className={classes.NewPost}>
+     
+                <div className={classes[hidePostForm]}>
+                    {/* <h1>Add a Post</h1>
+                    <label>Architects</label>
+                    <select value={this.state.author} onChange={(event) => this.setState({ author: event.target.value })}>
+                        <option key='1' value="0" >Select Author</option>
+                        <option key='2' value="Cichocka">Cichocka</option>
+                        <option key='3' value="Manu">Manu</option>
+                    </select>
+                    <label>Location</label>
+                    {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
+                     <CountryDropdown
+                        value={this.state.country}
+                        onChange={(val) => this.setState({ country: val })} />
+                    <br />
+                    <RegionDropdown
+                        country={this.state.country}
+                        value={this.state.region}
+                        onChange={(val) => this.setState({ region: val })} />
+{/* 
+                    <label>Year</label>
+                    <select value={this.state.year} onChange={(event) => this.setState({ year: event.target.value })}>
+                        {year}
+                    </select>
+                    <label>Content</label>
+                    <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({ content: event.target.value })} />
+                    <br />  */}
+                </div>
+                {form}
+               
             </div >
         );
     }
@@ -238,8 +438,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchNewPost: (content, country, region, author, year, imageFile, key) => dispatch(actions.addNewPost(content, country, region, author, year, imageFile, key)),
-        onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton()),
+        onFetchNewPost: (formData) => dispatch(actions.addNewPost(formData)),
+        onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton())
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(NewPost);

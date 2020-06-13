@@ -9,8 +9,8 @@ const imagesBlock = (props) => {
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
                 < img src={props.url} alt="MyBurger" />
             </Link>
-            <button onClick={props.clicked}>Remove</button>
-            <button onClick={props.clicked}>Update</button>
+            <button onClick={props.clicked}>Remove </button>
+            <button onClick={props.clickedUpdate}> Update</button>
             <p><strong>Architects</strong>: {props.architects}</p>
             <p><strong>Location</strong>: {props.locationCountry}, {props.locationRegion}</p>
             <p><strong>Year</strong>: {props.year}</p>

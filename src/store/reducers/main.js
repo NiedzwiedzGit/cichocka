@@ -15,11 +15,9 @@ const fetchMainContentStart = (state, action) => {
 };
 
 const fetchMainContentSuccess = (state, action) => {
-    const path = action.path;
-    const fullPath = action.fullPath;
     return updateObject(state, {
-        imageContentPath: path,
-        imageContentFullPath: fullPath,
+        imageContentPath: action.path,
+        imageContentFullPath: action.fullPath,
         loading: false,
         refresh: true
     });
