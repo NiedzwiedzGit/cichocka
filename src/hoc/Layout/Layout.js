@@ -25,7 +25,7 @@ class Layout extends Component {
     }
     componentDidMount() {
         console.log("test");
-        this.props.onFetchContent();
+       // this.props.onFetchContent();
         this.props.onFetchPostContent();
     };
 
@@ -37,14 +37,7 @@ class Layout extends Component {
             return { showSideDrawer: !prevState.showSideDrawer };
         });
     }
-
     render() {
-        // if (this.state.waitLoader) {
-        //     setTimeout(() => {
-        //         this.setState({ waitLoader: false })
-        //     }, 100);
-        // }
-
         console.log(!this.props.loading, !this.props.loadingContent);
         return (
             <Aux>
@@ -88,7 +81,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchContent: () => dispatch(actions.fetchMainContent()),
+       // onFetchContent: () => dispatch(actions.fetchMainContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent())
     };
 };

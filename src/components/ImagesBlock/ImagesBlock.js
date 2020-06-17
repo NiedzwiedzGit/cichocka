@@ -5,7 +5,8 @@ const imagesBlock = (props) => {
 
     return (
         < div className={classes.ImagesBlock}>
-            <Link to={props.url.slice(0, -4)}>
+            <Link to={props.url}>
+            {/* .slice(0, -4) */}
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
                 < img src={props.url} alt="MyBurger" />
             </Link>

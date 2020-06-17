@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import classes from './NewPost.css';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
@@ -129,71 +129,12 @@ class NewPost extends Component {
         update:this.props.update
     }
 
-    submitPost = () => {
-
-
-
-
-
-        // let postKey = new Date().getTime();
-        // postKey.toString();
-        // // console.log('checking wher is key = ',key);
-        // if (!this.props.loading && !this.props.animate) {
-        //     this.props.onFetchNewPost(
-        //         this.state.content,
-        //         this.state.country,
-        //         this.state.region,
-        //         this.state.author,
-        //         this.state.year,
-        //         this.state.imageFile,
-        //         //this.state.imgNeme,
-        //         postKey)
-        //     // this.handleFireBaseUpload();
-        // } else null;
-
-        // !this.props.loading && this.props.animate ?
-        //     this.setState({
-        //         content: '',
-        //         country: '',
-        //         region: '',
-        //         author: '',
-        //         year: '',
-        //         imgNeme: ''
-        //     }) : null;
-      //  this.props.onAnimateSuccesErrorButton();
-    };
-
     handleImageAsFile = (imageList) => {
         this.setState({ imageFile: imageList })
     };
-    handleFireBaseUpload = () => {
-        // console.log('start of upload');
-        // if (this.state.imageFile === '') {
-        //     console.error(`not an image, the image file is a ${typeof (imageFile)}`)
-        // }
 
-        // Array.from(this.state.imageFile).map(img => {
-        //     const uploadTask = storage.ref(`/images/${img.file.name}`).put(img.file);
-        // });
-        // const uploadTask = storage.ref(`/images/${this.state.imageFile.name}`).put(this.state.imageFile);
-        //initiates the firebase side uploading 
-        //     uploadTask.on('state_changed',
-        //         (snapShot) => {
-        //             //takes a snap shot of the process as it is happening
-        //             console.log(snapShot)
-        //         }, (err) => {
-        //             console.log(err)
-        //         }, () => {
-        //             storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
-        //                 .then(fireBaseUrl => {
-        //                     console.log('[storege ref] ' + fireBaseUrl);
-        //                 })
-        //         })
-    }
 
     handleChangeChk = (event, index) => {
-        console.log(event.target.name),
-
             this.setState(previousState => ({
                 checked: {
                     ...previousState.checked,
@@ -214,36 +155,70 @@ class NewPost extends Component {
         let postKey = new Date().getTime();
         postKey.toString();
         formData['key']=postKey;
-        // const order = {
-        //     ingredients: this.props.ings,
-        //     price: this.props.price,
-        //     orderData: formData,
-        //     userId: this.props.userId
-        // }
-        // this.props.onOrderBurger(order, this.props.token);
                 this.props.onFetchNewPost(formData)
             } else this.resetForm();
                this.props.onAnimateSuccesErrorButton();
     }
 
 resetForm=()=>{
-    const formElementsArray = [];
-    for (let key in this.state.orderForm) {
-        formElementsArray.push({
-            id: key,
-            config: this.state.orderForm[key]
-        });
+const oldState= {
+    architecture: {
+        elementType: 'input',
+        elementConfig: {
+            type: 'text',
+            placeholder: 'Author'
+        },
+        value: '',
+        validation: {
+            required: true
+        },
+        valid: false,
+        touched: false
+    },
+    author: {
+        elementType: 'input',
+        elementConfig: {
+            type: 'text',
+            placeholder: 'Photographs'
+        },
+        value: '',
+        validation: {
+            required: true
+        },
+        valid: false,
+        touched: false
+    },
+    street: {
+        elementType: 'input',
+        elementConfig: {
+            type: 'text',
+            placeholder: 'Location'
+        },
+        value: '',
+        validation: {
+            required: true
+        },
+        valid: false,
+        touched: false
+    },
+    year: {
+        elementType: 'input',
+        elementConfig: {
+            type: 'number',
+            placeholder: 'Year'
+        },
+        value: '',
+        validation: {
+            required: true,
+            minLength: 4,
+            maxLength: 4,
+            isNumeric: true
+        },
+        valid: false,
+        touched: false
     }
-    let newState={};
-    formElementsArray.map(formElement => (
-        newState=updateObject(this.state.orderForm[formElement.id], {
-            value:'',
-            valid: false,
-            touched: false
-        })
-    ))
-    this.setState({orderForm:newState});
-    console.log('test reseting/////',this.state.orderForm)
+}
+    this.setState({orderForm:oldState});
 }
     inputChangedHandler = (event, inputIdentifier,imageList) => {
         const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
@@ -281,7 +256,7 @@ resetForm=()=>{
                 disabled={!this.state.formIsValid}>
                    { this.state.formIsValid?"Add Post":"Fill all field"}</ButtonBootstrap>
 
-            if (this.state.btnMessage == "Do it again?") {
+            if (this.state.btnMessage === "Do it again?") {
                 this.setState({ btnMessage: "Success" });
             }
         } else if (!this.props.loading && this.props.animate) {
@@ -289,10 +264,9 @@ resetForm=()=>{
             setTimeout(() => {
                 this.setState({ btnMessage: "Do it again?" })
             }, 1000);
-
             animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> +
                 <Button
                     btnType="Success"/>
 
@@ -342,7 +316,7 @@ resetForm=()=>{
                                     {imageList.map((image, index) => (
                                         < div key={image.key}
                                             className={classes.ImgDiv}>
-                                            <img src={image.dataURL} />
+                                            <img src={image.dataURL} alt="not found" />
                                             <input
                                                 ref={ref => this.fileInput = ref}
                                                 key={index}

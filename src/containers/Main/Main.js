@@ -24,20 +24,6 @@ class Main extends Component {
         test: null
     }
 
-    componentDidMount() {
-        // this.props.onFetchContent();
-        // this.props.onFetchPostContent();
-
-    };
-    componentDidUpdate() {
-        if (!this.props.loadingNewPost && !this.props.loadingContent && this.state.url.length == 0) {
-            setTimeout(() => {
-                this.setState({ url: this.props.imageContentFullPath })
-                //window.location.reload(false);
-            }, 1000);
-        }
-    }
-
     onLoadContent = () => {
         let ImgBlock = <CircleLoader
             css={override}
@@ -45,29 +31,27 @@ class Main extends Component {
             color={"grey"}
             loading={this.state.waitLoader}
         />;
-        if (this.props.postContent != null && this.props.imageContentFullPath != null) {
-            if (this.props.postContent.length != 0 && this.props.imageContentFullPath.length != 0) {
-                console.log('[Main Component] =>', this.props.imageContentFullPath);
-                ImgBlock = this.props.imageContentFullPath.map((url, index) => {
-                   // console.log('[Main Component index] =>', index);
+                if (this.props.postContent !== null) {
+            if (this.props.postContent.length !== 0 ) {
+               ImgBlock=   this.props.postContent.map((res,index)=>{ 
                     return <ImagesBlock
                         key={index}
-                        url={url}
-                        architects={this.props.postContent[index].author}
-                        locationCountry={this.props.postContent[index].country}
-                        locationRegion={this.props.postContent[index].region}
-                        year={this.props.postContent[index].year}
-                        clicked={() => this.props.onDeletePost(this.props.postContent[index].id, this.props.postContent[index].imgName, this.props.postContent[index].key)}
+                        url={res.url}
+                        architects={res.author}
+                        locationCountry={res.country}
+                        locationRegion={res.region}
+                        year={res.year}
+                        clicked={() => this.props.onDeletePost(res.id, res.imgName, res.key)}
                         clickedUpdate={()=>this.props.onAddNewPost(
-                            this.props.postContent[index].author,
-                            this.props.postContent[index].country,
-                            this.props.postContent[index].region,
-                            this.props.postContent[index].year,
-                            this.props.postContent[index].key)}
+                            res.author,
+                            res.country,
+                            res.region,
+                            res.year,
+                            res.key)}
                     />
                 });
             }
-        } else null;
+        } else { return null};
 
         return ImgBlock;
     }
@@ -95,14 +79,10 @@ class Main extends Component {
 
 const mapStateToProps = state => {
     return {
-        imageContentPath: state.main.imageContentPath,
-        imageContentFullPath: state.main.imageContentFullPath,
         postContent: state.main.postContent,
         loadingNewPost: state.newpost.loading,
-        imageFile: state.newpost.imageFile,
         addNewPostContainer: state.newpost.addNewPostContainer,
-        loadingContent: state.main.loading,
-        refresh: state.main.refresh
+        loadingContent: state.main.loading
     };
 };
 const mapDispatchToProps = dispatch => {

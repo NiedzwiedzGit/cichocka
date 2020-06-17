@@ -38,37 +38,53 @@ export const addNewPost = (formData) => {
         dispatch(addNewPostStart());
         let imgName='';
         Array.from(formData.imageFile).map(img => {
-             imgName = img.file.name;
+            return imgName = img.file.name;
         });
-        const data = {
-            // title: this.state.title,
-            // country: country,
-            // region: region,
-            location:formData.street,
-            author:formData.author,
-            architecture:formData.architecture,
-            year: formData.year,
-            key: formData.key,
-            imgName:imgName
-            // imageNeme:imageFile.
-        };
-        console.log(data);
-        axios.post(`/newposts.json`,data)
-            .then(response => {
-                dispatch(addNewPostSuccess(formData.imageFile));
-                 console.log('---------', data.key);
-                // console.log("Data post on server");
-                Array.from(formData.imageFile).map(img => {
-                 storage.ref(`/images/${img.file.name}?key=${data.key}`).put(img.file);
-                });
-                //  .then(response => {});
-
-            })
-            .catch(err => {
-                dispatch(addNewPostFail())
-            }
-            );
    
+      //  console.log(data);
+        Array.from(formData.imageFile).map(img => {
+          return  storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file) 
+            .then(res=>{
+                let data = {};
+                storage
+                .ref(`${res.ref.fullPath}`)
+                .getDownloadURL().then(
+                    url=>{
+                        console.log(url.toString());
+                         data = {
+                            // title: this.state.title,
+                            // country: country,
+                            // region: region,
+                            location:formData.street,
+                            author:formData.author,
+                            architecture:formData.architecture,
+                            year: formData.year,
+                            key: formData.key,
+                            imgName:imgName,
+                            url:url.toString()
+                            // imageNeme:imageFile.
+                        }; 
+                        axios.post(`/newposts.json`,data)
+                        .then(response => {
+                            dispatch(addNewPostSuccess(formData.imageFile));
+                             console.log('---------', data.key);
+                            // console.log("Data post on server");
+                          
+                            //  .then(response => {});
+            
+                        })
+                        .catch(err => {
+                            dispatch(addNewPostFail())
+                        }
+                        );              
+                    }
+                )
+                
+
+       
+            });
+           });
+
         // initiates the firebase side uploading
         // uploadTask.on('state_changed',
         //     (snapShot) => {
