@@ -21,7 +21,14 @@ class Main extends Component {
     state = {
         url: [],
         text: false,
-        test: null
+        test: null,
+        id: []
+    }
+
+    deletePost = (id, imgName, key) => {
+        this.setState({ id: [...this.state.id, key] });
+
+        this.props.onDeletePost(id, imgName, key);
     }
 
     onLoadContent = () => {
@@ -31,18 +38,19 @@ class Main extends Component {
             color={"grey"}
             loading={this.state.waitLoader}
         />;
-                if (this.props.postContent !== null) {
-            if (this.props.postContent.length !== 0 ) {
-               ImgBlock=   this.props.postContent.map((res,index)=>{ 
+        if (this.props.postContent !== null) {
+            if (this.props.postContent.length !== 0) {
+                ImgBlock = this.props.postContent.map((res, index) => {
                     return <ImagesBlock
+                        close={this.state.id.includes(res.key)? 'Close' : null}
                         key={index}
                         url={res.url}
                         architects={res.author}
                         locationCountry={res.country}
                         locationRegion={res.region}
                         year={res.year}
-                        clicked={() => this.props.onDeletePost(res.id, res.imgName, res.key)}
-                        clickedUpdate={()=>this.props.onAddNewPost(
+                        clicked={() => this.deletePost(res.id, res.imgName, res.key)}
+                        clickedUpdate={() => this.props.onAddNewPost(
                             res.author,
                             res.country,
                             res.region,
@@ -51,11 +59,12 @@ class Main extends Component {
                     />
                 });
             }
-        } else { return null};
+        } else { return null };
 
         return ImgBlock;
     }
     render() {
+        console.log(this.state.id)
         return (
 
             <div className={classes.Main} >
@@ -89,8 +98,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
-        onDeletePost: (id, imgName,key) => dispatch(actions.deletePost(id, imgName,key)),
-        onAddNewPost:()=>dispatch(actions.addNewPostContainer())
+        onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
+        onAddNewPost: () => dispatch(actions.addNewPostContainer())
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

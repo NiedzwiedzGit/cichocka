@@ -4,7 +4,7 @@ import classes from './ImagesBlock.css';
 const imagesBlock = (props) => {
 
     return (
-        < div className={classes.ImagesBlock}>
+        < div className={[classes.ImagesBlock,classes[props.close]].join(' ')}>
             <Link to={props.url}>
             {/* .slice(0, -4) */}
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
