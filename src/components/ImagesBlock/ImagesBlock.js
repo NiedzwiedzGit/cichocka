@@ -1,17 +1,21 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import ButtonBootstrap from 'react-bootstrap/Button';
 import classes from './ImagesBlock.css';
 const imagesBlock = (props) => {
 
     return (
-        < div className={[classes.ImagesBlock,classes[props.close]].join(' ')}>
+        < div className={[classes.ImagesBlock, classes[props.close]].join(' ')}>
+
             <Link to={props.url}>
-            {/* .slice(0, -4) */}
+                {/* .slice(0, -4) */}
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
                 < img src={props.url} alt="MyBurger" />
-            </Link>
-            <button onClick={props.clicked}>Remove </button>
-            <button onClick={props.clickedUpdate}> Update</button>
+            </Link><br />
+           {props.auth? <div className={classes.ImagesBlockBtnSwipe}>
+                <ButtonBootstrap variant="outline-danger" onClick={props.clicked}>Remove</ButtonBootstrap>
+                <ButtonBootstrap variant="outline-primary" onClick={props.clickedUpdate}>Update</ButtonBootstrap>
+            </div>:null}
             <p><strong>Architects</strong>: {props.architects}</p>
             <p><strong>Location</strong>: {props.locationCountry}, {props.locationRegion}</p>
             <p><strong>Year</strong>: {props.year}</p>

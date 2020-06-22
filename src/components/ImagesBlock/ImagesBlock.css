@@ -7,6 +7,23 @@ width:500px;
 height: auto;
 margin-bottom: 40px;
 }
+.ImagesBlock:hover .ImagesBlockBtnSwipe{
+    opacity: 1;
+    margin-top:0;
+    transition:  margin 0.5s,opacity 0.5s;
+}
+.ImagesBlockBtnSwipe {
+    margin-top:-100px;
+opacity: 0;
+width: 100%;
+
+}
+
+.ImagesBlockBtnSwipe button{
+width: 40%;
+margin:0 5px 50px 0;
+    }
+
 .ImagesBlock p{
     font-size: 70%;
     left: 0;

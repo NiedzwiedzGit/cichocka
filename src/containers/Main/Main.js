@@ -30,10 +30,10 @@ class Main extends Component {
 
         this.props.onDeletePost(id, imgName, key);
     }
-    updatePostData=(author, country, region,year,key)=>{
-        console.log('in updatePost ',author);
-        this.props.onUpdatePostData(author, country, region,year,key); 
-        this.props.onAddNewPost(); 
+    updatePostData = (author, country, region, year, key) => {
+        console.log('in updatePost ', author);
+        this.props.onUpdatePostData(author, country, region, year, key);
+        this.props.onAddNewPost();
     }
 
     onLoadContent = () => {
@@ -47,7 +47,8 @@ class Main extends Component {
             if (this.props.postContent.length !== 0) {
                 ImgBlock = this.props.postContent.map((res, index) => {
                     return <ImagesBlock
-                        close={this.state.id.includes(res.key)? 'Close' : null}
+                        auth={true}
+                        close={this.state.id.includes(res.key) ? 'Close' : null}
                         key={index}
                         url={res.url}
                         architects={res.author}
@@ -106,7 +107,7 @@ const mapDispatchToProps = dispatch => {
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
         onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
-        onUpdatePostData:(author, country, region,year,key)=>dispatch(actions.updatePostData(author, country, region,year,key))
+        onUpdatePostData: (author, country, region, year, key) => dispatch(actions.updatePostData(author, country, region, year, key))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
