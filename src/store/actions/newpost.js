@@ -9,10 +9,10 @@ export const addNewPostStart = () => {
     };
 };
 export const addNewPostSuccess = (imageFile) => {
-    console.log("addNewPostSuccess",imageFile);
+    console.log("addNewPostSuccess", imageFile);
     return {
         type: actionTypes.ADD_NEW_POST_SUCCESS,
-imageFile:imageFile
+        imageFile: imageFile
     };
 };
 
@@ -36,54 +36,54 @@ export const addNewPost = (formData) => {
     // console.log('-----',imageFile)
     return dispatch => {
         dispatch(addNewPostStart());
-        let imgName='';
+        let imgName = '';
         Array.from(formData.imageFile).map(img => {
             return imgName = img.file.name;
         });
-   
-      //  console.log(data);
-        Array.from(formData.imageFile).map(img => {
-          return  storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file) 
-            .then(res=>{
-                let data = {};
-                storage
-                .ref(`${res.ref.fullPath}`)
-                .getDownloadURL().then(
-                    url=>{
-                        console.log(url.toString());
-                         data = {
-                            // title: this.state.title,
-                            // country: country,
-                            // region: region,
-                            location:formData.street,
-                            author:formData.author,
-                            architecture:formData.architecture,
-                            year: formData.year,
-                            key: formData.key,
-                            imgName:imgName,
-                            url:url.toString()
-                            // imageNeme:imageFile.
-                        }; 
-                        axios.post(`/newposts.json`,data)
-                        .then(response => {
-                            dispatch(addNewPostSuccess(formData.imageFile));
-                             console.log('---------', data.key);
-                            // console.log("Data post on server");
-                          
-                            //  .then(response => {});
-            
-                        })
-                        .catch(err => {
-                            dispatch(addNewPostFail())
-                        }
-                        );              
-                    }
-                )
-                
 
-       
-            });
-           });
+        //  console.log(data);
+        Array.from(formData.imageFile).map(img => {
+            return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
+                .then(res => {
+                    let data = {};
+                    storage
+                        .ref(`${res.ref.fullPath}`)
+                        .getDownloadURL().then(
+                            url => {
+                                console.log(url.toString());
+                                data = {
+                                    // title: this.state.title,
+                                    // country: country,
+                                    // region: region,
+                                    location: formData.street,
+                                    author: formData.author,
+                                    architecture: formData.architecture,
+                                    year: formData.year,
+                                    key: formData.key,
+                                    imgName: imgName,
+                                    url: url.toString()
+                                    // imageNeme:imageFile.
+                                };
+                                axios.post(`/newposts.json`, data)
+                                    .then(response => {
+                                        dispatch(addNewPostSuccess(formData.imageFile));
+                                        console.log('---------', data.key);
+                                        // console.log("Data post on server");
+
+                                        //  .then(response => {});
+
+                                    })
+                                    .catch(err => {
+                                        dispatch(addNewPostFail())
+                                    }
+                                    );
+                            }
+                        )
+
+
+
+                });
+        });
 
         // initiates the firebase side uploading
         // uploadTask.on('state_changed',
@@ -101,9 +101,22 @@ export const addNewPost = (formData) => {
     };
 };
 
-export const addNewPostContainer=()=>{
+export const addNewPostContainer = () => {
     return {
-        type:actionTypes.ADD_NEW_POST_CONTAINER
+        type: actionTypes.ADD_NEW_POST_CONTAINER
+    }
+}
+export const updatePostData = (author, country, region, year, key) => {
+    let updateData = {
+        author: author,
+        country: country,
+        region: region,
+        year: year,
+        key: key
+    }
+    return {
+        type: actionTypes.UPDATE_POST_DATA,
+        updateData: updateData
     }
 }
 

@@ -30,6 +30,11 @@ class Main extends Component {
 
         this.props.onDeletePost(id, imgName, key);
     }
+    updatePostData=(author, country, region,year,key)=>{
+        console.log('in updatePost ',author);
+        this.props.onUpdatePostData(author, country, region,year,key); 
+        this.props.onAddNewPost(); 
+    }
 
     onLoadContent = () => {
         let ImgBlock = <CircleLoader
@@ -50,12 +55,13 @@ class Main extends Component {
                         locationRegion={res.region}
                         year={res.year}
                         clicked={() => this.deletePost(res.id, res.imgName, res.key)}
-                        clickedUpdate={() => this.props.onAddNewPost(
+                        clickedUpdate={() => this.updatePostData(
                             res.author,
                             res.country,
                             res.region,
                             res.year,
-                            res.key)}
+                            res.key
+                        )}
                     />
                 });
             }
@@ -99,7 +105,8 @@ const mapDispatchToProps = dispatch => {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
         onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
-        onAddNewPost: () => dispatch(actions.addNewPostContainer())
+        onAddNewPost: () => dispatch(actions.addNewPostContainer()),
+        onUpdatePostData:(author, country, region,year,key)=>dispatch(actions.updatePostData(author, country, region,year,key))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

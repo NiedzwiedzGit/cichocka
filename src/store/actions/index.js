@@ -10,5 +10,6 @@ export {
 export {
     addNewPost,
     animateSuccesErrorButton,
-    addNewPostContainer
+    addNewPostContainer,
+    updatePostData
 } from './newpost';

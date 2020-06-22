@@ -125,7 +125,7 @@ class NewPost extends Component {
         imageFile: {},
         checkBox: false,
         checked: {},
-        sAuthorMassage: true,
+        previewWindow: false,
         update:this.props.update
     }
 
@@ -239,6 +239,8 @@ const oldState= {
 
     render() {
 
+        //  this.props.key?console.log('work'):console.log('not exists');
+        console.log('in newPost ',this.props.updateData);
         const formElementsArray = [];
         for (let key in this.state.orderForm) {
             formElementsArray.push({
@@ -290,7 +292,7 @@ const oldState= {
                 <Button
                     btnState={hidePostForm + 'PostForm'}
                     btnType="Success"
-                   
+
                 />
                 <div className={classes.SubmitBtn}>
                     {animationButton}
@@ -300,18 +302,16 @@ const oldState= {
                     maxNumber={maxNumber}
                     multiple
                     maxFileSize={maxMbFileSize}
-                    acceptType={["jpg", "gif", "png"]}
-
-                >
+                    acceptType={["jpg", "gif", "png"]} >
                     {({ imageList, onImageUpload, onImageRemoveAll }) => (
                         // write your building UI
                         <div className={classes.ImgDivWraper}>
                             <div className={classes.BtnWraper}>
                                 <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Upload images</ButtonBootstrap>{' '}
                                 <ButtonBootstrap variant="outline-danger" onClick={onImageRemoveAll}>Remove all images</ButtonBootstrap>{' '}
+                                {imageList.length !== 0 ? <ButtonBootstrap variant="info" onClick={()=>{this.setState({previewWindow:false})}}>You have: {imageList.length} images </ButtonBootstrap>:null}
                             </div>
-                            {console.log(imageList.length)}
-                            {imageList.length !== 0 ?
+                            {imageList.length !== 0 && this.state.previewWindow==false?
                                 <div className={classes.PreloaderWraper}>
                                     {imageList.map((image, index) => (
                                         < div key={image.key}
@@ -342,6 +342,9 @@ const oldState= {
                                             </ButtonBootstrap>
                                         </div>
                                     ))}
+                                     <div className={classes.BtnWraper, classes.PreviewWindowBtn}>
+                                     <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Add</ButtonBootstrap>
+                                         <ButtonBootstrap variant="success" onClick={()=>{this.setState({previewWindow:true})}}>Done</ButtonBootstrap></div>
                                 </div> : null}
                         </div>
                     )}
@@ -405,7 +408,8 @@ const oldState= {
 const mapStateToProps = state => {
     return {
         loading: state.newpost.loading,
-        animate: state.newpost.animate
+        animate: state.newpost.animate,
+        updateData: state.newpost.updateData
     };
 }
 
