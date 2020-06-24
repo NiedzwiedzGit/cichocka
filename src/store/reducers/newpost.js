@@ -6,7 +6,8 @@ const initialState = {
     animate: false,
     imageFile:null,
     addNewPostContainer:false,
-    updateData:null
+    updateData:null,
+    updateHandler:false
 };
 
 
@@ -30,7 +31,9 @@ const addNewPostContainerHandler=(state, action)=>{
     return updateObject(state, { addNewPostContainer: !state.addNewPostContainer });
 }
 const updatePostData=(state, action)=>{
-    return updateObject(state, { updateData: action.updateData });
+    return updateObject(state, { updateData: action.updateData,
+    updateHandler:true
+     });
 }
 
 const reducer = (state = initialState, action) => {

@@ -45,7 +45,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false
             },
-            street: {
+            location: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
@@ -128,6 +128,10 @@ class NewPost extends Component {
         previewWindow: false,
         update:this.props.update
     }
+    componentDidMount(){
+        this.props.updateHandler?console.log('[DidiMount newpoost]////// ',this.props.updateData['architecture']):null;
+        this.props.updateHandler?this.inputUpdateHandler(this.props.updateData):null;      
+    }
 
     handleImageAsFile = (imageList) => {
         this.setState({ imageFile: imageList })
@@ -188,7 +192,7 @@ const oldState= {
         valid: false,
         touched: false
     },
-    street: {
+    location: {
         elementType: 'input',
         elementConfig: {
             type: 'text',
@@ -220,6 +224,27 @@ const oldState= {
 }
     this.setState({orderForm:oldState});
 }
+inputUpdateHandler=(postData)=>{
+    let updatedFormElement={};
+    let updatedOrderForm={};
+    for (let key in this.state.orderForm) {
+        console.log('[inputUpdateHandler newpoost] ',postData[key]);
+         updatedFormElement[key] = updateObject(this.state.orderForm[key], {
+            value: postData[key],
+             elementConfig:{ type: key=="year"?'number':'text'},
+            valid:true,
+            touched:true
+        });
+        console.log('updatedFormElement ',updatedFormElement);
+         updatedOrderForm = updateObject(this.state.orderForm, {
+            key: updatedFormElement
+        });
+    }
+console.log('update ',updatedOrderForm);
+this.setState({
+    orderForm: updatedFormElement
+});
+}
     inputChangedHandler = (event, inputIdentifier,imageList) => {
         const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
             value: !this.props.loading && this.props.animate? '': event.target.value,
@@ -240,7 +265,7 @@ const oldState= {
     render() {
 
         //  this.props.key?console.log('work'):console.log('not exists');
-        console.log('in newPost ',this.props.updateData);
+      //  console.log('in newPost ',this.props.updateData);
         const formElementsArray = [];
         for (let key in this.state.orderForm) {
             formElementsArray.push({
@@ -409,7 +434,8 @@ const mapStateToProps = state => {
     return {
         loading: state.newpost.loading,
         animate: state.newpost.animate,
-        updateData: state.newpost.updateData
+        updateData: state.newpost.updateData,
+        updateHandler:state.newpost.updateHandler
     };
 }
 

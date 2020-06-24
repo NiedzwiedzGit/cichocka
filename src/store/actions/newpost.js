@@ -106,17 +106,10 @@ export const addNewPostContainer = () => {
         type: actionTypes.ADD_NEW_POST_CONTAINER
     }
 }
-export const updatePostData = (author, country, region, year, key) => {
-    let updateData = {
-        author: author,
-        country: country,
-        region: region,
-        year: year,
-        key: key
-    }
+export const updatePostData = (postData) => {
     return {
         type: actionTypes.UPDATE_POST_DATA,
-        updateData: updateData
+        updateData: postData
     }
 }
 

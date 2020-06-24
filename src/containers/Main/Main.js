@@ -30,9 +30,8 @@ class Main extends Component {
 
         this.props.onDeletePost(id, imgName, key);
     }
-    updatePostData = (author, country, region, year, key) => {
-        console.log('in updatePost ', author);
-        this.props.onUpdatePostData(author, country, region, year, key);
+    updatePostData = (postData) => {
+        this.props.onUpdatePostData(postData);
         this.props.onAddNewPost();
     }
 
@@ -56,13 +55,7 @@ class Main extends Component {
                         locationRegion={res.region}
                         year={res.year}
                         clicked={() => this.deletePost(res.id, res.imgName, res.key)}
-                        clickedUpdate={() => this.updatePostData(
-                            res.author,
-                            res.country,
-                            res.region,
-                            res.year,
-                            res.key
-                        )}
+                        clickedUpdate={() => this.updatePostData(res)}
                     />
                 });
             }
@@ -107,7 +100,7 @@ const mapDispatchToProps = dispatch => {
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
         onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
-        onUpdatePostData: (author, country, region, year, key) => dispatch(actions.updatePostData(author, country, region, year, key))
+        onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
