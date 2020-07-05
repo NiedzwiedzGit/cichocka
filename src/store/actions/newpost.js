@@ -31,60 +31,61 @@ export const animateSuccesErrorButton = () => {
 
 
 export const addNewPost = (formData) => {
-    console.log(formData);
-    // console.log('checking wher is key = ',postKey);
-    // console.log('-----',imageFile)
+    console.log('addNewPost action ',formData);
     return dispatch => {
         dispatch(addNewPostStart());
         let imgName = '';
-        Array.from(formData.imageFile).map(img => {
-            return imgName = img.file.name;
-        });
-
-        //  console.log(data);
-        Array.from(formData.imageFile).map(img => {
-            return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
-                .then(res => {
-                    let data = {};
-                    storage
-                        .ref(`${res.ref.fullPath}`)
-                        .getDownloadURL().then(
-                            url => {
-                                console.log(url.toString());
-                                data = {
-                                    // title: this.state.title,
-                                    // country: country,
-                                    // region: region,
-                                    location: formData.street,
-                                    author: formData.author,
-                                    architecture: formData.architecture,
-                                    year: formData.year,
-                                    key: formData.key,
-                                    imgName: imgName,
-                                    url: url.toString()
-                                    // imageNeme:imageFile.
-                                };
-                                axios.post(`/newposts.json`, data)
-                                    .then(response => {
-                                        dispatch(addNewPostSuccess(formData.imageFile));
-                                        console.log('---------', data.key);
-                                        // console.log("Data post on server");
-
-                                        //  .then(response => {});
-
-                                    })
-                                    .catch(err => {
-                                        dispatch(addNewPostFail())
-                                    }
-                                    );
-                            }
-                        )
-
-
-
-                });
-        });
-
+        if(!formData.imgName){
+            Array.from(formData.imageFile).map(img => {
+                return imgName = img.file.name;
+            });
+            Array.from(formData.imageFile).map(img => {
+                return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
+                    .then(res => {
+                        let data = {};
+                        storage
+                            .ref(`${res.ref.fullPath}`)
+                            .getDownloadURL().then(
+                                url => {
+                                    console.log(url.toString());
+                                    data = {
+                                        location: formData.location,
+                                        photographs: formData.author,
+                                        architecture: formData.architecture,
+                                        year: formData.year,
+                                        key: formData.key,
+                                        imgName: imgName,
+                                        url: url.toString()
+                                    };
+                                    axios.post(`/newposts.json`, data)
+                                        .then(response => {
+                                            dispatch(addNewPostSuccess(formData.imageFile));
+                                            console.log('---------', data.key);
+                                        })
+                                        .catch(err => {
+                                            dispatch(addNewPostFail())
+                                        }
+                                        );
+                                }
+                            )
+                    });
+            });    
+        }else{
+            axios.delete(`/newposts/${formData.id}.json`,{data:{key:formData.key}}).then(response => {
+                    console.log(response);
+                    axios.post(`/newposts.json`, formData)
+                    .then(response => {
+                        dispatch(addNewPostSuccess());
+                        console.log('-----update----', formData.key);
+                    })
+                    .catch(err => {
+                        dispatch(addNewPostFail())
+                    }
+                    );
+                  });
+                //     storage.ref(`/images/${imgName}?key=${key}`).delete();
+        }
+        
         // initiates the firebase side uploading
         // uploadTask.on('state_changed',
         //     (snapShot) => {

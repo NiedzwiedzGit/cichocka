@@ -32,7 +32,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false
             },
-            author: {
+            photographs: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
@@ -121,6 +121,7 @@ class NewPost extends Component {
         // author: '',
         // year: '',
         imgNeme: '',
+        updateForm:{},
         btnMessage: "Success",
         imageFile: {},
         checkBox: false,
@@ -129,8 +130,9 @@ class NewPost extends Component {
         update:this.props.update
     }
     componentDidMount(){
-        this.props.updateHandler?console.log('[DidiMount newpoost]////// ',this.props.updateData['architecture']):null;
-        this.props.updateHandler?this.inputUpdateHandler(this.props.updateData):null;      
+        this.props.updateHandler?this.inputUpdateHandler(this.props.updateData):this.resetForm();    
+        this.props.updateHandler?this.setState({ updateForm: this.props.updateData }):null;
+        this.props.updateHandler?console.log('[didMount] ',this.state.updateForm):null;
     }
 
     handleImageAsFile = (imageList) => {
@@ -151,14 +153,15 @@ class NewPost extends Component {
         if (!this.props.loading && !this.props.animate) {
         event.preventDefault();
         let formData = {};
-        for (let formElementIdentifier in this.state.orderForm) {
+        if(!this.props.updateHandler){for (let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
         formData['imageFile']=this.state.imageFile;
 
-        let postKey = new Date().getTime();
+        let postKey =!this.props.updateHandler? new Date().getTime():this.props.updateData.key;
         postKey.toString();
-        formData['key']=postKey;
+        formData['key']=postKey;}else formData=this.state.updateForm
+   
                 this.props.onFetchNewPost(formData)
             } else this.resetForm();
                this.props.onAnimateSuccesErrorButton();
@@ -170,7 +173,7 @@ const oldState= {
         elementType: 'input',
         elementConfig: {
             type: 'text',
-            placeholder: 'Author'
+            placeholder: 'Architecture'
         },
         value: '',
         validation: {
@@ -226,24 +229,16 @@ const oldState= {
 }
 inputUpdateHandler=(postData)=>{
     let updatedFormElement={};
-    let updatedOrderForm={};
     for (let key in this.state.orderForm) {
-        console.log('[inputUpdateHandler newpoost] ',postData[key]);
          updatedFormElement[key] = updateObject(this.state.orderForm[key], {
             value: postData[key],
-             elementConfig:{ type: key=="year"?'number':'text'},
+             elementConfig:{ type: key==="year"?'number':'text'},
             valid:true,
             touched:true
         });
-        console.log('updatedFormElement ',updatedFormElement);
-         updatedOrderForm = updateObject(this.state.orderForm, {
-            key: updatedFormElement
-        });
     }
-console.log('update ',updatedOrderForm);
-this.setState({
-    orderForm: updatedFormElement
-});
+    console.log('[from inputUpdateHandler] ',updatedFormElement);
+this.setState({orderForm: updatedFormElement});
 }
     inputChangedHandler = (event, inputIdentifier,imageList) => {
         const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
@@ -251,6 +246,7 @@ this.setState({
             valid: !this.props.loading && this.props.animate?false:checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
             touched: !this.props.loading && this.props.animate?false:true
         });
+        let updateList=this.state.updateForm;
         const updatedOrderForm = updateObject(this.state.orderForm, {
             [inputIdentifier]: updatedFormElement
         });
@@ -258,11 +254,19 @@ this.setState({
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+            this.props.updateHandler?updateList[inputIdentifier]=updatedOrderForm[inputIdentifier].value:null;
         }
-        this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid,imageFile:imageList });
+        console.log('[from inputChangedHandler] ',updatedOrderForm);
+        this.setState({ 
+            orderForm: updatedOrderForm, 
+            formIsValid: formIsValid,
+            imageFile:imageList,
+            updateForm:updateList
+         });
     }
 
     render() {
+        console.log('updateForm ',this.state.updateForm);
 
         //  this.props.key?console.log('work'):console.log('not exists');
       //  console.log('in newPost ',this.props.updateData);
@@ -336,7 +340,7 @@ this.setState({
                                 <ButtonBootstrap variant="outline-danger" onClick={onImageRemoveAll}>Remove all images</ButtonBootstrap>{' '}
                                 {imageList.length !== 0 ? <ButtonBootstrap variant="info" onClick={()=>{this.setState({previewWindow:false})}}>You have: {imageList.length} images </ButtonBootstrap>:null}
                             </div>
-                            {imageList.length !== 0 && this.state.previewWindow==false?
+                            {imageList.length !== 0 && this.state.previewWindow===false?
                                 <div className={classes.PreloaderWraper}>
                                     {imageList.map((image, index) => (
                                         < div key={image.key}
@@ -443,7 +447,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchNewPost: (formData) => dispatch(actions.addNewPost(formData)),
-        onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton())
+        onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton()),
+        onUpdatePostData: () => dispatch(actions.updatePostData())
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(NewPost);

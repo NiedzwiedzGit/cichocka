@@ -16,10 +16,10 @@ const imagesBlock = (props) => {
                 <ButtonBootstrap variant="outline-danger" onClick={props.clicked}>Remove</ButtonBootstrap>
                 <ButtonBootstrap variant="outline-primary" onClick={props.clickedUpdate}>Update</ButtonBootstrap>
             </div>:null}
-            <p><strong>Architects</strong>: {props.architects}</p>
+            <p><strong>Architects</strong>: {props.architecture}</p>
             <p><strong>Location</strong>: {props.locationCountry}, {props.locationRegion}</p>
             <p><strong>Year</strong>: {props.year}</p>
-            <p><strong>Photographs</strong>: Joaquín Mosquera Casares</p>
+            <p><strong>Photographs</strong>: {props.photographs}</p>
 
         </div>
     );

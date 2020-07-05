@@ -32,7 +32,7 @@ const addNewPostContainerHandler=(state, action)=>{
 }
 const updatePostData=(state, action)=>{
     return updateObject(state, { updateData: action.updateData,
-    updateHandler:true
+    updateHandler:!state.updateHandler
      });
 }
 

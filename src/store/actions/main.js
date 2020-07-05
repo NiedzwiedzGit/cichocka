@@ -103,10 +103,10 @@ export const deletePost=(id,imgName,key)=>{
     console.log('[you want delete]=>',id)
     console.log('[you want delete imageContentPath]=>',imgName)
     return dispatch=>{
-        // axios.delete(`/newposts/${id}.json`,{data:{imgName:imgName}}).then(response => {
-        //     console.log(response);
-        //   });
-        //     storage.ref(`/images/${imgName}?key=${key}`).delete();
+        axios.delete(`/newposts/${id}.json`,{data:{imgName:imgName}}).then(response => {
+            console.log(response);
+          });
+            storage.ref(`/images/${imgName}?key=${key}`).delete();
         //     console.log('[you want delete path',`/images/${imgName}?key=${key}`)        
     };
 

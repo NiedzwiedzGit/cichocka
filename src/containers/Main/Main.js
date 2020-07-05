@@ -50,7 +50,8 @@ class Main extends Component {
                         close={this.state.id.includes(res.key) ? 'Close' : null}
                         key={index}
                         url={res.url}
-                        architects={res.author}
+                        architecture={res.architecture}
+                        photographs={res.photographs}
                         locationCountry={res.country}
                         locationRegion={res.region}
                         year={res.year}
@@ -62,6 +63,10 @@ class Main extends Component {
         } else { return null };
 
         return ImgBlock;
+    }
+    closeHandler=()=>{
+        this.props.onAddNewPost(); 
+        this.props.updateHandler?this.props.onUpdatePostData():null;
     }
     render() {
         console.log(this.state.id)
@@ -75,7 +80,7 @@ class Main extends Component {
                 {this.props.addNewPostContainer && !this.props.loading ? <NewPost /> : null}
                 {this.props.addNewPostContainer ? <Backdrop
                     show={this.props.addNewPostContainer}
-                    clicked={this.props.onAddNewPost} /> : null}
+                    clicked={this.closeHandler} /> : null}
                 <Suspense fallback={<div>loading</div>}>
                     {this.onLoadContent()}
                 </Suspense>
@@ -91,7 +96,9 @@ const mapStateToProps = state => {
         postContent: state.main.postContent,
         loadingNewPost: state.newpost.loading,
         addNewPostContainer: state.newpost.addNewPostContainer,
-        loadingContent: state.main.loading
+        loadingContent: state.main.loading,
+        updateHandler:state.newpost.updateHandler
+
     };
 };
 const mapDispatchToProps = dispatch => {
@@ -100,7 +107,7 @@ const mapDispatchToProps = dispatch => {
         onFetchPostContent: () => dispatch(actions.fetchPostContent()),
         onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
-        onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData))
+        onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData)),
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
