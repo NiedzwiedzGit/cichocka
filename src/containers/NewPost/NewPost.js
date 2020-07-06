@@ -8,7 +8,7 @@ import ButtonBootstrap from 'react-bootstrap/Button';
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 import { updateObject, checkValidity } from '../../shared/utility';
-import Input from '../../components/UI/Input/Input'; 
+import Input from '../../components/UI/Input/Input';
 
 import ImageUploading from "react-images-uploading";
 
@@ -121,18 +121,18 @@ class NewPost extends Component {
         // author: '',
         // year: '',
         imgNeme: '',
-        updateForm:{},
+        updateForm: {},
         btnMessage: "Success",
         imageFile: {},
         checkBox: false,
         checked: {},
         previewWindow: false,
-        update:this.props.update
+        update: this.props.update
     }
-    componentDidMount(){
-        this.props.updateHandler?this.inputUpdateHandler(this.props.updateData):this.resetForm();    
-        this.props.updateHandler?this.setState({ updateForm: this.props.updateData }):null;
-        this.props.updateHandler?console.log('[didMount] ',this.state.updateForm):null;
+    componentDidMount() {
+        this.props.updateHandler ? this.inputUpdateHandler(this.props.updateData) : this.resetForm();
+        this.props.updateHandler ? this.setState({ updateForm: this.props.updateData }) : null;
+        this.props.updateHandler ? console.log('[didMount] ', this.state.updateForm) : null;
     }
 
     handleImageAsFile = (imageList) => {
@@ -141,112 +141,119 @@ class NewPost extends Component {
 
 
     handleChangeChk = (event, index) => {
-            this.setState(previousState => ({
-                checked: {
-                    ...previousState.checked,
-                    [index]: !previousState.checked[index]
-                }
-            }));
+        this.setState(previousState => ({
+            checked: {
+                ...previousState.checked,
+                [index]: !previousState.checked[index]
+            }
+        }));
     }
 
     submitPost = (event) => {
         if (!this.props.loading && !this.props.animate) {
-        event.preventDefault();
-        let formData = {};
-        if(!this.props.updateHandler){for (let formElementIdentifier in this.state.orderForm) {
-            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+            event.preventDefault();
+            let formData = {};
+            if (!this.props.updateHandler) {
+                for (let formElementIdentifier in this.state.orderForm) {
+                    formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+                }
+                formData['imageFile'] = this.state.imageFile;
+                let postKey = !this.props.updateHandler ? new Date().getTime() : this.props.updateData.key;
+                postKey.toString();
+                formData['key'] = postKey;
+            } else {
+                formData = this.state.updateForm;
+                formData['imageFile'] = this.state.imageFile;
+            }
+
+            this.props.onFetchNewPost(formData, this.props.updateHandler)
+        } else this.resetForm();
+        this.props.onAnimateSuccesErrorButton();
+    }
+
+    resetForm = () => {
+        const oldState = {
+            architecture: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Architecture'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            photographs: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Photographs'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            location: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Location'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            year: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'number',
+                    placeholder: 'Year'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 4,
+                    maxLength: 4,
+                    isNumeric: true
+                },
+                valid: false,
+                touched: false
+            }
         }
-        formData['imageFile']=this.state.imageFile;
-
-        let postKey =!this.props.updateHandler? new Date().getTime():this.props.updateData.key;
-        postKey.toString();
-        formData['key']=postKey;}else formData=this.state.updateForm
-   
-                this.props.onFetchNewPost(formData)
-            } else this.resetForm();
-               this.props.onAnimateSuccesErrorButton();
+        this.setState({ orderForm: oldState });
     }
-
-resetForm=()=>{
-const oldState= {
-    architecture: {
-        elementType: 'input',
-        elementConfig: {
-            type: 'text',
-            placeholder: 'Architecture'
-        },
-        value: '',
-        validation: {
-            required: true
-        },
-        valid: false,
-        touched: false
-    },
-    author: {
-        elementType: 'input',
-        elementConfig: {
-            type: 'text',
-            placeholder: 'Photographs'
-        },
-        value: '',
-        validation: {
-            required: true
-        },
-        valid: false,
-        touched: false
-    },
-    location: {
-        elementType: 'input',
-        elementConfig: {
-            type: 'text',
-            placeholder: 'Location'
-        },
-        value: '',
-        validation: {
-            required: true
-        },
-        valid: false,
-        touched: false
-    },
-    year: {
-        elementType: 'input',
-        elementConfig: {
-            type: 'number',
-            placeholder: 'Year'
-        },
-        value: '',
-        validation: {
-            required: true,
-            minLength: 4,
-            maxLength: 4,
-            isNumeric: true
-        },
-        valid: false,
-        touched: false
+    inputUpdateHandler = (postData) => {
+        let updatedFormElement = {};
+        for (let key in this.state.orderForm) {
+            updatedFormElement[key] = updateObject(this.state.orderForm[key], {
+                value: postData[key],
+                elementConfig: {
+                    type: key === "year" ? 'number' : 'text',
+                    placeholder: this.state.orderForm[key].elementConfig.placeholder
+                },
+                valid: true,
+                touched: true
+            });
+        }
+        console.log('[from inputUpdateHandler] ', updatedFormElement);
+        this.setState({ orderForm: updatedFormElement });
     }
-}
-    this.setState({orderForm:oldState});
-}
-inputUpdateHandler=(postData)=>{
-    let updatedFormElement={};
-    for (let key in this.state.orderForm) {
-         updatedFormElement[key] = updateObject(this.state.orderForm[key], {
-            value: postData[key],
-             elementConfig:{ type: key==="year"?'number':'text'},
-            valid:true,
-            touched:true
-        });
-    }
-    console.log('[from inputUpdateHandler] ',updatedFormElement);
-this.setState({orderForm: updatedFormElement});
-}
-    inputChangedHandler = (event, inputIdentifier,imageList) => {
+    inputChangedHandler = (event, inputIdentifier) => {
         const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
-            value: !this.props.loading && this.props.animate? '': event.target.value,
-            valid: !this.props.loading && this.props.animate?false:checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
-            touched: !this.props.loading && this.props.animate?false:true
+            value: !this.props.loading && this.props.animate ? '' : event.target.value,
+            valid: !this.props.loading && this.props.animate ? false : checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: !this.props.loading && this.props.animate ? false : true
         });
-        let updateList=this.state.updateForm;
+        let updateList = this.state.updateForm;
         const updatedOrderForm = updateObject(this.state.orderForm, {
             [inputIdentifier]: updatedFormElement
         });
@@ -254,22 +261,21 @@ this.setState({orderForm: updatedFormElement});
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
-            this.props.updateHandler?updateList[inputIdentifier]=updatedOrderForm[inputIdentifier].value:null;
+            this.props.updateHandler ? updateList[inputIdentifier] = updatedOrderForm[inputIdentifier].value : null;
         }
-        console.log('[from inputChangedHandler] ',updatedOrderForm);
-        this.setState({ 
-            orderForm: updatedOrderForm, 
+        console.log('[from inputChangedHandler] ', updatedOrderForm);
+        this.setState({
+            orderForm: updatedOrderForm,
             formIsValid: formIsValid,
-            imageFile:imageList,
-            updateForm:updateList
-         });
+            updateForm: updateList
+        });
     }
 
     render() {
-        console.log('updateForm ',this.state.updateForm);
+        console.log('updateForm ', this.state.updateForm);
 
         //  this.props.key?console.log('work'):console.log('not exists');
-      //  console.log('in newPost ',this.props.updateData);
+        //  console.log('in newPost ',this.props.updateData);
         const formElementsArray = [];
         for (let key in this.state.orderForm) {
             formElementsArray.push({
@@ -285,7 +291,7 @@ this.setState({orderForm: updatedFormElement});
                 variant="outline-dark"
                 onClick={this.submitPost}
                 disabled={!this.state.formIsValid}>
-                   { this.state.formIsValid?"Add Post":"Fill all field"}</ButtonBootstrap>
+                {this.state.formIsValid ? "Add Post" : "Fill all field"}</ButtonBootstrap>
 
             if (this.state.btnMessage === "Do it again?") {
                 this.setState({ btnMessage: "Success" });
@@ -299,23 +305,23 @@ this.setState({orderForm: updatedFormElement});
                 variant="success"
                 onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> +
                 <Button
-                    btnType="Success"/>
+                    btnType="Success" />
 
         } else { animationButton = <label className={classes.Loading}><PropagateLoader /></label> }
         let form = (
             <form onSubmit={this.submitPost} >
                 <div className={classes[hidePostForm]}>
-                {formElementsArray.map(formElement => (
-                    <Input
-                        key={formElement.id}
-                        elementType={formElement.config.elementType}
-                        elementConfig={formElement.config.elementConfig}
-                        value={formElement.config.value}
-                        invalid={!formElement.config.valid}
-                        shouldValidate={formElement.config.validation}
-                        touched={formElement.config.touched}
-                        changed={(event) => this.inputChangedHandler(event, formElement.id)} />
-                ))}
+                    {formElementsArray.map(formElement => (
+                        <Input
+                            key={formElement.id}
+                            elementType={formElement.config.elementType}
+                            elementConfig={formElement.config.elementConfig}
+                            value={formElement.config.value}
+                            invalid={!formElement.config.valid}
+                            shouldValidate={formElement.config.validation}
+                            touched={formElement.config.touched}
+                            changed={(event) => this.inputChangedHandler(event, formElement.id)} />
+                    ))}
                 </div>
                 {/* <Button btnType="Success" disabled={!this.state.formIsValid}></Button> */}
                 <Button
@@ -338,9 +344,9 @@ this.setState({orderForm: updatedFormElement});
                             <div className={classes.BtnWraper}>
                                 <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Upload images</ButtonBootstrap>{' '}
                                 <ButtonBootstrap variant="outline-danger" onClick={onImageRemoveAll}>Remove all images</ButtonBootstrap>{' '}
-                                {imageList.length !== 0 ? <ButtonBootstrap variant="info" onClick={()=>{this.setState({previewWindow:false})}}>You have: {imageList.length} images </ButtonBootstrap>:null}
+                                {imageList.length !== 0 ? <ButtonBootstrap variant="info" onClick={() => { this.setState({ previewWindow: false }) }}>You have: {imageList.length} images </ButtonBootstrap> : null}
                             </div>
-                            {imageList.length !== 0 && this.state.previewWindow===false?
+                            {imageList.length !== 0 && this.state.previewWindow === false ?
                                 <div className={classes.PreloaderWraper}>
                                     {imageList.map((image, index) => (
                                         < div key={image.key}
@@ -371,9 +377,9 @@ this.setState({orderForm: updatedFormElement});
                                             </ButtonBootstrap>
                                         </div>
                                     ))}
-                                     <div className={classes.BtnWraper, classes.PreviewWindowBtn}>
+                                    <div className={classes.BtnWraper, classes.PreviewWindowBtn}>
                                      <ButtonBootstrap variant="outline-primary" onClick={onImageUpload}>Add</ButtonBootstrap>
-                                         <ButtonBootstrap variant="success" onClick={()=>{this.setState({previewWindow:true})}}>Done</ButtonBootstrap></div>
+                                    <ButtonBootstrap variant="success" onClick={() => { this.setState({ previewWindow: true }) }}>Done</ButtonBootstrap></div>
                                 </div> : null}
                         </div>
                     )}
@@ -394,12 +400,12 @@ this.setState({orderForm: updatedFormElement});
 
 
         console.log('[this.props.animate] -> ' + this.props.animate);
-       
+
 
 
         return (
             <div className={classes.NewPost}>
-     
+
                 <div className={classes[hidePostForm]}>
                     {/* <h1>Add a Post</h1>
                     <label>Architects</label>
@@ -410,7 +416,7 @@ this.setState({orderForm: updatedFormElement});
                     </select>
                     <label>Location</label>
                     {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
-                     <CountryDropdown
+                    <CountryDropdown
                         value={this.state.country}
                         onChange={(val) => this.setState({ country: val })} />
                     <br />
@@ -418,7 +424,7 @@ this.setState({orderForm: updatedFormElement});
                         country={this.state.country}
                         value={this.state.region}
                         onChange={(val) => this.setState({ region: val })} />
-{/* 
+                    {/* 
                     <label>Year</label>
                     <select value={this.state.year} onChange={(event) => this.setState({ year: event.target.value })}>
                         {year}
@@ -428,7 +434,7 @@ this.setState({orderForm: updatedFormElement});
                     <br />  */}
                 </div>
                 {form}
-               
+
             </div >
         );
     }
@@ -439,14 +445,14 @@ const mapStateToProps = state => {
         loading: state.newpost.loading,
         animate: state.newpost.animate,
         updateData: state.newpost.updateData,
-        updateHandler:state.newpost.updateHandler
+        updateHandler: state.newpost.updateHandler
     };
 }
 
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchNewPost: (formData) => dispatch(actions.addNewPost(formData)),
+        onFetchNewPost: (formData, isUpdate) => dispatch(actions.addNewPost(formData, isUpdate)),
         onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton()),
         onUpdatePostData: () => dispatch(actions.updatePostData())
     };

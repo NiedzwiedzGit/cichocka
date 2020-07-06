@@ -30,12 +30,12 @@ export const animateSuccesErrorButton = () => {
 };
 
 
-export const addNewPost = (formData) => {
-    console.log('addNewPost action ',formData);
+export const addNewPost = (formData, isUpdate) => {
+    console.log('addNewPost action ', formData);
     return dispatch => {
         dispatch(addNewPostStart());
         let imgName = '';
-        if(!formData.imgName){
+        if (!formData.imgName && !isUpdate) {
             Array.from(formData.imageFile).map(img => {
                 return imgName = img.file.name;
             });
@@ -50,7 +50,7 @@ export const addNewPost = (formData) => {
                                     console.log(url.toString());
                                     data = {
                                         location: formData.location,
-                                        photographs: formData.author,
+                                        photographs: formData.photographs,
                                         architecture: formData.architecture,
                                         year: formData.year,
                                         key: formData.key,
@@ -69,23 +69,59 @@ export const addNewPost = (formData) => {
                                 }
                             )
                     });
-            });    
-        }else{
-            axios.delete(`/newposts/${formData.id}.json`,{data:{key:formData.key}}).then(response => {
+            });
+        } else {
+            if (formData.imageFile.length >= 1) {
+                storage.ref(`/images/${formData.imgName}?key=${formData.key}`).delete().then(response => {
+                    axios.delete(`/newposts/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
+                        Array.from(formData.imageFile).map(img => {
+                            return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
+                                .then(res => {
+                                    let data = {};
+                                    storage
+                                        .ref(`${res.ref.fullPath}`)
+                                        .getDownloadURL().then(
+                                            url => {
+                                                console.log(url.toString());
+                                                data = {
+                                                    location: formData.location,
+                                                    photographs: formData.photographs,
+                                                    architecture: formData.architecture,
+                                                    year: formData.year,
+                                                    key: formData.key,
+                                                    imgName: formData.imgName,
+                                                    url: url.toString()
+                                                };
+                                                axios.post(`/newposts.json`, data)
+                                                    .then(response => {
+                                                        dispatch(addNewPostSuccess(formData.imageFile));
+                                                    })
+                                                    .catch(err => {
+                                                        dispatch(addNewPostFail())
+                                                    }
+                                                    );
+                                            }
+                                        )
+                                });
+                        });
+                    })
+                })
+            } else {
+                axios.delete(`/newposts/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
                     console.log(response);
                     axios.post(`/newposts.json`, formData)
-                    .then(response => {
-                        dispatch(addNewPostSuccess());
-                        console.log('-----update----', formData.key);
-                    })
-                    .catch(err => {
-                        dispatch(addNewPostFail())
-                    }
-                    );
-                  });
-                //     storage.ref(`/images/${imgName}?key=${key}`).delete();
+                        .then(response => {
+                            dispatch(addNewPostSuccess());
+                            console.log('-----update----', formData.key);
+                        })
+                        .catch(err => {
+                            dispatch(addNewPostFail())
+                        }
+                        );
+                });
+            }
         }
-        
+
         // initiates the firebase side uploading
         // uploadTask.on('state_changed',
         //     (snapShot) => {
