@@ -303,7 +303,7 @@ class NewPost extends Component {
             }, 1000);
             animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> +
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap>,
                 <Button
                     btnType="Success" />
 

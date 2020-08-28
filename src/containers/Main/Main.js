@@ -55,6 +55,7 @@ class Main extends Component {
                         locationCountry={res.country}
                         locationRegion={res.region}
                         year={res.year}
+                        imageName={res.imgName}
                         clicked={() => this.deletePost(res.id, res.imgName, res.key)}
                         clickedUpdate={() => this.updatePostData(res)}
                     />

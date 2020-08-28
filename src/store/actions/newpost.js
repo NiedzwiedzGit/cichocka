@@ -40,7 +40,7 @@ export const addNewPost = (formData, isUpdate) => {
                 return imgName = img.file.name;
             });
             Array.from(formData.imageFile).map(img => {
-                return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
+                return storage.ref(`/images/${formData.key}/${img.file.name}?key=${formData.key}`).put(img.file)
                     .then(res => {
                         let data = {};
                         storage
