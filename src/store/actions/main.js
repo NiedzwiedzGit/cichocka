@@ -3,9 +3,9 @@ import axios from '../../axios-orders';
 import { storage } from '../../shared/firebase';
 
 export const fetchMainContentSuccess = (path, fullPath) => {
-    console.log('path of img ',path );
-    console.log('fullPath of img ',fullPath );
-        return {
+    console.log('path of img ', path);
+    console.log('fullPath of img ', fullPath);
+    return {
         type: actionTypes.FETCH_MAIN_CONTENT_SUCCESS,
         path: path,
         fullPath: fullPath,
@@ -46,6 +46,16 @@ export const fetchPostContentFail = (error) => {
     };
 };
 
+export const getUrlArray = (urlArray) => {
+    console.log("getUrlArray ", urlArray)
+
+    return {
+        type: actionTypes.FETCH_POST_URL_LIST,
+        urlArray: urlArray
+
+    }
+}
+
 // export const fetchMainContent = () => {
 //     return dispatch => {
 //         dispatch(() => fetchMainContentStart());
@@ -83,7 +93,7 @@ export const fetchPostContent = () => {
         //     console.log("------",response)
         //  })
         axios.get('/newposts.json')
-            .then(response => { 
+            .then(response => {
                 const fetchOrders = [];
                 for (let key in response.data) {
                     fetchOrders.push({
@@ -99,14 +109,14 @@ export const fetchPostContent = () => {
     };
 };
 
-export const deletePost=(id,imgName,key)=>{
-    console.log('[you want delete]=>',id)
-    console.log('[you want delete imageContentPath]=>',imgName)
-    return dispatch=>{
-        axios.delete(`/newposts/${id}.json`,{data:{imgName:imgName}}).then(response => {
+export const deletePost = (id, imgName, key) => {
+    console.log('[you want delete]=>', id)
+    console.log('[you want delete imageContentPath]=>', imgName)
+    return dispatch => {
+        axios.delete(`/newposts/${id}.json`, { data: { imgName: imgName } }).then(response => {
             console.log(response);
-          });
-            storage.ref(`/images/${imgName}?key=${key}`).delete();
+        });
+        storage.ref(`/images/${imgName}?key=${key}`).delete();
         //     console.log('[you want delete path',`/images/${imgName}?key=${key}`)        
     };
 

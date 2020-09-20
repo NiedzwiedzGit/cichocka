@@ -34,42 +34,52 @@ export const addNewPost = (formData, isUpdate) => {
     console.log('addNewPost action ', formData);
     return dispatch => {
         dispatch(addNewPostStart());
-        let imgName = '';
+        let imgName = [];
+        let urlList = [];
+        let data = {};
+        let index = 0;
         if (!formData.imgName && !isUpdate) {
-            Array.from(formData.imageFile).map(img => {
-                return imgName = img.file.name;
+            Array.from(formData.imageFile).map((img, index) => {
+                imgName.push(img.file.name);
+                return imgName;
             });
             Array.from(formData.imageFile).map(img => {
                 return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
                     .then(res => {
-                        let data = {};
                         storage
                             .ref(`${res.ref.fullPath}`)
                             .getDownloadURL().then(
                                 url => {
+                                    console.log('addNewPost action imgName', imgName);
                                     console.log(url.toString());
+                                    urlList.push(url);
                                     data = {
                                         location: formData.location,
                                         photographs: formData.photographs,
                                         architecture: formData.architecture,
                                         year: formData.year,
                                         key: formData.key,
-                                        imgName: imgName,
-                                        url: url.toString()
+                                        imgName: imgName.toString(),
+                                        url: urlList.toString()
                                     };
-                                    axios.post(`/newposts.json`, data)
-                                        .then(response => {
-                                            dispatch(addNewPostSuccess(formData.imageFile));
-                                            console.log('---------', data.key);
-                                        })
-                                        .catch(err => {
-                                            dispatch(addNewPostFail())
-                                        }
-                                        );
+                                    index++;
+                                    if (formData.imageFile.length === index) {
+                                        axios.post(`/newposts.json`, data)
+                                            .then(response => {
+                                                dispatch(addNewPostSuccess(formData.imageFile));
+                                                console.log('---------', data.key);
+                                            })
+                                            .catch(err => {
+                                                dispatch(addNewPostFail())
+                                            }
+                                            );
+                                    }
                                 }
                             )
                     });
             });
+
+            console.log('---------', data);
         } else {
             if (formData.imageFile.length >= 1) {
                 storage.ref(`/images/${formData.imgName}?key=${formData.key}`).delete().then(response => {

@@ -10,6 +10,11 @@ import Backdrop from '../../components/UI/Backdrop/Backdrop';
 import CircleLoader from "react-spinners/CircleLoader";
 import { css } from "@emotion/core";
 import * as actions from '../../store/actions/index';
+
+import asyncComponent from '../../hoc/asyncComponent/asyncComponent';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
+// import asyncAuth from '../../components/ImagesBlock/ImagesBlockContent/ImagesBlockContent';
+
 const override = css`
   position:absolut;
   left:0;
@@ -17,6 +22,11 @@ const override = css`
   margin: 20% auto;
   border-color: red;
 `;
+
+const asyncAuth = asyncComponent(() => {
+    return import('../../components/ImagesBlock/ImagesBlockContent/ImagesBlockContent');
+
+});
 class Main extends Component {
     state = {
         url: [],
@@ -34,7 +44,12 @@ class Main extends Component {
         this.props.onUpdatePostData(postData);
         this.props.onAddNewPost();
     }
+    postSelectedHandler = (id, urlArray) => {
+        this.props.history.push({ pathname: '/postGalery/' + id });
+        // console.log("urlArray ", urlArray)
+        this.props.onUrlArray(urlArray);
 
+    }
     onLoadContent = () => {
         let ImgBlock = <CircleLoader
             css={override}
@@ -45,6 +60,8 @@ class Main extends Component {
         if (this.props.postContent !== null) {
             if (this.props.postContent.length !== 0) {
                 ImgBlock = this.props.postContent.map((res, index) => {
+
+                    console.log('split ', res.url.split(","))
                     return <ImagesBlock
                         auth={true}
                         close={this.state.id.includes(res.key) ? 'Close' : null}
@@ -52,21 +69,23 @@ class Main extends Component {
                         url={res.url}
                         architecture={res.architecture}
                         photographs={res.photographs}
-                        locationCountry={res.country}
-                        locationRegion={res.region}
+                        locationCountry={res.location}
                         year={res.year}
+                        id={res.key}
                         clicked={() => this.deletePost(res.id, res.imgName, res.key)}
                         clickedUpdate={() => this.updatePostData(res)}
+                        clickedOn={() => this.postSelectedHandler(res.key, res.url.split(","))}
                     />
                 });
+                console.log(ImgBlock);
             }
         } else { return null };
 
         return ImgBlock;
     }
-    closeHandler=()=>{
-        this.props.onAddNewPost(); 
-        this.props.updateHandler?this.props.onUpdatePostData():null;
+    closeHandler = () => {
+        this.props.onAddNewPost();
+        this.props.updateHandler ? this.props.onUpdatePostData() : null;
     }
     render() {
         console.log(this.state.id)
@@ -84,6 +103,11 @@ class Main extends Component {
                 <Suspense fallback={<div>loading</div>}>
                     {this.onLoadContent()}
                 </Suspense>
+                <Switch>
+
+                    <Route path={'/postGalery/:id'} component={asyncAuth} />
+                    <Redirect to="/" />
+                </Switch>
 
             </div >
         );
@@ -97,7 +121,7 @@ const mapStateToProps = state => {
         loadingNewPost: state.newpost.loading,
         addNewPostContainer: state.newpost.addNewPostContainer,
         loadingContent: state.main.loading,
-        updateHandler:state.newpost.updateHandler
+        updateHandler: state.newpost.updateHandler
 
     };
 };
@@ -108,6 +132,8 @@ const mapDispatchToProps = dispatch => {
         onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
         onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData)),
+        onUrlArray: (urlArray) => dispatch(actions.getUrlArray(urlArray)),
+
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));

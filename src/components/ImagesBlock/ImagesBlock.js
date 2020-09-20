@@ -1,27 +1,50 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import ButtonBootstrap from 'react-bootstrap/Button';
 import classes from './ImagesBlock.css';
-const imagesBlock = (props) => {
 
-    return (
-        < div className={[classes.ImagesBlock, classes[props.close]].join(' ')}>
+import ImagesBlockContent from '../../components/ImagesBlock/ImagesBlockContent/ImagesBlockContent';
 
-            <Link to={props.url}>
+class ImagesBlock extends Component {
+    componentDidMount() {
+
+    }
+    //console.log(props);
+    // clickHandler = () => {
+    //     console.log("clickHandler ImgB ", this.props.urlSplit);
+
+    //     <ImagesBlockContent
+    //         urlTest={this.props.urlSplit}
+    //     />
+    //     return (this.props.clickedOn,)
+    // }
+    render() {
+        return (
+
+            <div className={[classes.ImagesBlock, classes[this.props.close]].join(' ')} >
+
+                {/* <Link to={'/postGalery/' + props.id}> */}
                 {/* .slice(0, -4) */}
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
-                < img src={props.url} alt="MyBurger" />
-            </Link><br />
-           {props.auth? <div className={classes.ImagesBlockBtnSwipe}>
-                <ButtonBootstrap variant="outline-danger" onClick={props.clicked}>Remove</ButtonBootstrap>
-                <ButtonBootstrap variant="outline-primary" onClick={props.clickedUpdate}>Update</ButtonBootstrap>
-            </div>:null}
-            <p><strong>Architects</strong>: {props.architecture}</p>
-            <p><strong>Location</strong>: {props.locationCountry}, {props.locationRegion}</p>
-            <p><strong>Year</strong>: {props.year}</p>
-            <p><strong>Photographs</strong>: {props.photographs}</p>
+                <img src={this.props.url} onClick={this.props.clickedOn} alt="MyBurger" />
+                {/* </Link> */}
+                {/* {<ImagesBlockContent url={props.url} />} */}
+                <br />
+                {
+                    this.props.auth ? <div className={classes.ImagesBlockBtnSwipe}>
+                        <ButtonBootstrap variant="outline-danger" onClick={this.props.clicked}>Remove</ButtonBootstrap>
+                        <ButtonBootstrap variant="outline-primary" onClick={this.props.clickedUpdate}>Update</ButtonBootstrap>
+                    </div > : null
+                }
+                <p><strong>Architects</strong>: {this.props.architecture}</p>
+                <p><strong>Location</strong>: {this.props.locationCountry}</p>
+                <p><strong>Year</strong>: {this.props.year}</p>
+                <p><strong>Photographs</strong>: {this.props.photographs}</p>
 
-        </div>
-    );
+            </div >
+        );
+    }
+
 };
-export default withRouter(imagesBlock);
+
+export default ImagesBlock;

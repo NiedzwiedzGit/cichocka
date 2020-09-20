@@ -3,7 +3,9 @@ export { addHeaderItem } from './header';
 export {
     fetchMainContent,
     fetchPostContent,
-    deletePost
+    deletePost,
+    getUrlArray
+
 } from './main';
 
 

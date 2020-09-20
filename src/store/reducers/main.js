@@ -7,7 +7,8 @@ const initialState = {
     loading: null,
     loadingContent: null,
     postContent: [],
-    refresh: false
+    refresh: false,
+    urlArray: null
 };
 
 const fetchMainContentStart = (state, action) => {
@@ -42,6 +43,10 @@ const fetchPostContentSuccess = (state, action) => {
 const fetchPostContentFail = (state, action) => {
     return updateObject(state, { loadingContent: false });
 };
+const fetchPostUrlList = (state, action) => {
+    return updateObject(state, { urlArray: action.urlArray });
+};
+
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -51,6 +56,8 @@ const reducer = (state = initialState, action) => {
         case actionTypes.FETCH_POST_CONTENT_START: return fetchPostContentStart(state, action);
         case actionTypes.FETCH_POST_CONTENT_SUCCESS: return fetchPostContentSuccess(state, action);
         case actionTypes.FETCH_POST_CONTENT_FAIL: return fetchPostContentFail(state, action);
+        case actionTypes.FETCH_POST_URL_LIST: return fetchPostUrlList(state, action);
+
         default: return state;
     }
 };
