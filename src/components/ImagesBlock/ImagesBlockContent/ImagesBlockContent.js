@@ -3,8 +3,14 @@ import { Link, withRouter } from 'react-router-dom';
 import ButtonBootstrap from 'react-bootstrap/Button';
 
 import CircleLoader from "react-spinners/CircleLoader";
+
 import { css } from "@emotion/core";
 import Carousel from 'react-bootstrap/Carousel'
+
+// import ImageGallery from 'react-image-gallery';
+// import "react-image-gallery/styles/css/image-gallery.css";
+
+import ImageGallery from 'react-grid-gallery';
 
 import { connect } from 'react-redux';
 
@@ -34,13 +40,16 @@ class ImagesBlockContent extends Component {
         let urlP = [];
         this.props.urlArray !== null ? this.props.urlArray.map((url, index) => {
             urlP.push(
-                <Carousel.Item>
-                    < img
-                        className="d-block h-100"
-                        src={url}
-                        alt={index + " slide"}
-                    />
-                </Carousel.Item>
+                {
+
+                    src: url,
+                    thumbnail: url,
+                    thumbnailWidth: 320,
+                    thumbnailHeight: 174,
+                    //isSelected: false,
+                    //                   caption: "After Rain (Jeshu John - designerspics.com)"
+                }
+
             )
         }) : urlP.push(ImgBlock)
         return urlP;
@@ -52,13 +61,9 @@ class ImagesBlockContent extends Component {
         if (this.props.match.params.id) {
             a = <div >
                 <h1>{this.props.match.params.architecture}</h1>
-                {/* <p>You selected the Course with ID: {this.props.match.params.id}</p>
-                <p>Test of url {this.props.urlArray}</p> */}
-                <Carousel className={classes.Carousel}>
-                    {this.urlCounter()};
-                </Carousel>
-                }
-                            )}
+                <ImageGallery
+                    enableImageSelection={false}
+                    images={this.urlCounter()} />;
             </div>;
         } else {
             a = <div >
