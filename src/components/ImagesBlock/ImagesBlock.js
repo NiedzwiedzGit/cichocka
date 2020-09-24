@@ -26,7 +26,12 @@ class ImagesBlock extends Component {
                 {/* <Link to={'/postGalery/' + props.id}> */}
                 {/* .slice(0, -4) */}
                 {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
-                <img src={this.props.url} onClick={this.props.clickedOn} alt="MyBurger" />
+                <div className={classes.ImagesBlockPicture}>
+                    <img
+                        src={this.props.url}
+                        onClick={this.props.clickedOn}
+                        alt="MyBurger" />
+                </div>
                 {/* </Link> */}
                 {/* {<ImagesBlockContent url={props.url} />} */}
                 <br />
@@ -36,10 +41,12 @@ class ImagesBlock extends Component {
                         <ButtonBootstrap variant="outline-primary" onClick={this.props.clickedUpdate}>Update</ButtonBootstrap>
                     </div > : null
                 }
-                <p><strong>Architects</strong>: {this.props.architecture}</p>
-                <p><strong>Location</strong>: {this.props.locationCountry}</p>
-                <p><strong>Year</strong>: {this.props.year}</p>
-                <p><strong>Photographs</strong>: {this.props.photographs}</p>
+                <div className={classes.ImagesBlockText}>
+                    <p><strong>Architects</strong>: {this.props.architecture}</p>
+                    <p><strong>Location</strong>: {this.props.locationCountry}</p>
+                    <p><strong>Year</strong>: {this.props.year}</p>
+                    <p><strong>Photographs</strong>: {this.props.photographs}</p>
+                </div>
 
             </div >
         );
