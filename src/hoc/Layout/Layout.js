@@ -24,8 +24,8 @@ class Layout extends Component {
         waitLoader: false,
     }
     componentDidMount() {
-        console.log("test");
-       // this.props.onFetchContent();
+        console.log(this.props.routes);
+        // this.props.onFetchContent();
         this.props.onFetchPostContent();
     };
 
@@ -56,7 +56,7 @@ class Layout extends Component {
                     loading={this.state.waitLoader}
                 /> : null}
                 {!this.props.loading && !this.props.loadingContent ?
-                    <Main >{this.props.children}</Main>
+                    <main>{this.props.children}</main>
                     : <CircleLoader
                         css={override}
                         size={150}
@@ -81,7 +81,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-       // onFetchContent: () => dispatch(actions.fetchMainContent()),
+        // onFetchContent: () => dispatch(actions.fetchMainContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent())
     };
 };

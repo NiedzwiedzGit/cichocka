@@ -4,8 +4,16 @@ import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Layout from './hoc/Layout/Layout';
 
-const asyncAuth = asyncComponent(() => {
-  return import('./components/ImagesBlock/ImagesBlockContent/ImagesBlockContent');
+// const postGalery = asyncComponent(() => {
+//   return import('./components/ImagesBlock/ImagesBlockContent/ImagesBlockContent');
+
+// });
+const newsMedia = asyncComponent(() => {
+  return import('./containers/NewsMedia/NewsMedia');
+
+});
+const Main = asyncComponent(() => {
+  return import('./containers/Main/Main');
 
 });
 
@@ -13,8 +21,9 @@ class App extends Component {
   render() {
     let routes = (
       <Switch>
-        {/* <Route path="/postGalery" component={asyncAuth} /> */}
-        {/* <Route path="/" exact component={BurgerBuilder} /> */}
+        <Route path={'/prasa'} exact component={newsMedia} />
+        {/* <Route path={'/postGalery/:id'} component={postGalery} /> */}
+        <Route path="/" component={Main} />
         <Redirect to="/" />
       </Switch>
     );

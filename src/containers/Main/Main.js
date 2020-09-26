@@ -23,8 +23,12 @@ const override = css`
   border-color: red;
 `;
 
-const asyncAuth = asyncComponent(() => {
+const postGalery = asyncComponent(() => {
     return import('../../components/ImagesBlock/ImagesBlockContent/ImagesBlockContent');
+
+});
+const newsMedia = asyncComponent(() => {
+    return import('../NewsMedia/NewsMedia');
 
 });
 class Main extends Component {
@@ -104,9 +108,9 @@ class Main extends Component {
                     {this.onLoadContent()}
                 </Suspense>
                 <Switch>
-
-                    <Route path={'/postGalery/:id'} component={asyncAuth} />
-                    <Redirect to="/" />
+                    {/* <Route path={'/prasa'} exact component={newsMedia} /> */}
+                    <Route path={'/postGalery/:id'} component={postGalery} />
+                    {/* <Redirect to="/" /> */}
                 </Switch>
 
             </div >
