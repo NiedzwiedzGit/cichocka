@@ -23,14 +23,15 @@ class NewPost extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'Author'
+                    placeholder: 'Architecture'
                 },
                 value: '',
                 validation: {
                     required: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
             },
             photographs: {
                 elementType: 'input',
@@ -43,7 +44,8 @@ class NewPost extends Component {
                     required: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
             },
             location: {
                 elementType: 'input',
@@ -56,7 +58,50 @@ class NewPost extends Component {
                     required: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
+            },
+            describeData: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Describe'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: false
+            },
+            webAddress: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'url',
+                    placeholder: 'URL'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: false
+            },
+            location: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Location'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: true
             },
             year: {
                 elementType: 'input',
@@ -72,7 +117,8 @@ class NewPost extends Component {
                     isNumeric: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
             },
             // country: {
             //     elementType: 'input',
@@ -153,9 +199,14 @@ class NewPost extends Component {
         if (!this.props.loading && !this.props.animate) {
             event.preventDefault();
             let formData = {};
+            // && !this.props.field
             if (!this.props.updateHandler) {
                 for (let formElementIdentifier in this.state.orderForm) {
-                    formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+                    if (this.state.orderForm[formElementIdentifier].startView && this.state.orderForm[formElementIdentifier].value !== '') {
+                        formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+                    } else if (!this.state.orderForm[formElementIdentifier].startView && this.state.orderForm[formElementIdentifier].value !== '') {
+                        formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+                    }
                 }
                 formData['imageFile'] = this.state.imageFile;
                 let postKey = !this.props.updateHandler ? new Date().getTime() : this.props.updateData.key;
@@ -165,8 +216,8 @@ class NewPost extends Component {
                 formData = this.state.updateForm;
                 formData['imageFile'] = this.state.imageFile;
             }
-
-            this.props.onFetchNewPost(formData, this.props.updateHandler)
+            console.log("formData test ", formData);
+            //  this.props.onFetchNewPost(formData, this.props.updateHandler)
         } else this.resetForm();
         this.props.onAnimateSuccesErrorButton();
     }
@@ -184,7 +235,8 @@ class NewPost extends Component {
                     required: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
             },
             photographs: {
                 elementType: 'input',
@@ -197,7 +249,8 @@ class NewPost extends Component {
                     required: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
             },
             location: {
                 elementType: 'input',
@@ -210,7 +263,50 @@ class NewPost extends Component {
                     required: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
+            },
+            describeData: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Describe'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: false
+            },
+            webAddress: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'url',
+                    placeholder: 'URL'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: false
+            },
+            location: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Location'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: true
             },
             year: {
                 elementType: 'input',
@@ -226,7 +322,8 @@ class NewPost extends Component {
                     isNumeric: true
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                startView: true
             }
         }
         this.setState({ orderForm: oldState });
@@ -259,11 +356,19 @@ class NewPost extends Component {
         });
 
         let formIsValid = true;
-        for (let inputIdentifier in updatedOrderForm) {
-            formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
-            this.props.updateHandler ? updateList[inputIdentifier] = updatedOrderForm[inputIdentifier].value : null;
+
+        if (!this.props.field) {
+            for (let inputIdentifier in updatedOrderForm) {
+                if (this.state.orderForm[inputIdentifier].startView) {
+                    formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+                    this.props.updateHandler ? updateList[inputIdentifier] = updatedOrderForm[inputIdentifier].value : null;
+                }
+            }
+        } else {
+            this.props.field.split(' ').map(res => {
+                formIsValid = updatedOrderForm[res].valid && formIsValid;
+            })
         }
-        console.log('[from inputChangedHandler] ', updatedOrderForm);
         this.setState({
             orderForm: updatedOrderForm,
             formIsValid: formIsValid,
@@ -273,15 +378,23 @@ class NewPost extends Component {
 
     render() {
         console.log('updateForm ', this.state.updateForm);
-
-        //  this.props.key?console.log('work'):console.log('not exists');
-        //  console.log('in newPost ',this.props.updateData);
         const formElementsArray = [];
-        for (let key in this.state.orderForm) {
-            formElementsArray.push({
-                id: key,
-                config: this.state.orderForm[key]
-            });
+        if (this.props.newsMedia !== true) {
+            for (let key in this.state.orderForm) {
+                if (this.state.orderForm[key].startView) {
+                    formElementsArray.push({
+                        id: key,
+                        config: this.state.orderForm[key]
+                    });
+                }
+            }
+        } else {
+            this.props.field.split(' ').map(res => {
+                formElementsArray.push({
+                    id: res,
+                    config: this.state.orderForm[res]
+                });
+            })
         }
         let animationButton = null;
         let hidePostForm = "Show";
@@ -361,7 +474,8 @@ class NewPost extends Component {
                                                 checked={checked[index] || false}
                                                 disabled={!checked[index] && disabled}
                                                 onChange={(event) => this.handleChangeChk(event, index)}
-                                            />                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
+                                            />
+                                            <ButtonBootstrap variant="outline-info" onClick={image.onUpdate}>
                                                 <svg className="bi bi-arrow-clockwise" width="0.9em" height="0.9em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                     <path fillRule="evenodd" d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
                                                     <path fillRule="evenodd" d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
@@ -416,14 +530,14 @@ class NewPost extends Component {
                     </select>
                     <label>Location</label>
                     {/* <input type="text" value={this.state.title} onChange={(event) => this.setState({ title: event.target.value })} /> */}
-                    <CountryDropdown
+                    {/* <CountryDropdown
                         value={this.state.country}
                         onChange={(val) => this.setState({ country: val })} />
                     <br />
                     <RegionDropdown
                         country={this.state.country}
                         value={this.state.region}
-                        onChange={(val) => this.setState({ region: val })} />
+                        onChange={(val) => this.setState({ region: val })} /> */}
                     {/* 
                     <label>Year</label>
                     <select value={this.state.year} onChange={(event) => this.setState({ year: event.target.value })}>
@@ -453,6 +567,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchNewPost: (formData, isUpdate) => dispatch(actions.addNewPost(formData, isUpdate)),
+        //   onFetchNewPost: (formData, isUpdate) => dispatch(actions.addNewPost(formData, isUpdate)),
         onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton()),
         onUpdatePostData: () => dispatch(actions.updatePostData())
     };

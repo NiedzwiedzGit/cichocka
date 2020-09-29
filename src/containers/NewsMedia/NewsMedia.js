@@ -23,7 +23,10 @@ class NewsMedia extends Component {
                 <Button
                     btnType={!this.props.addNewPostContainer ? "Add" : "Close"}
                     clicked={this.props.onAddNewPost} />
-                {this.props.addNewPostContainer && !this.props.loading ? <NewPost /> : null}
+                {this.props.addNewPostContainer && !this.props.loading ? <NewPost
+                    newsMedia={true}
+                    field={'describeData webAddress'}
+                /> : null}
                 {this.props.addNewPostContainer ? <Backdrop
                     show={this.props.addNewPostContainer}
                     clicked={this.closeHandler} /> : null}
