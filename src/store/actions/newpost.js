@@ -30,18 +30,30 @@ export const addNewPost = (formData, isUpdate, folderName) => {
         dispatch(addNewPostStart());
         let imgName = [];
         let urlList = [];
-        let data = {};
+        let data = {
+            location: formData.location,
+            photographs: formData.photographs,
+            architecture: formData.architecture,
+            year: formData.year,
+            text: formData.textField,
+            describeData: formData.describeData,
+            webAddress: formData.webAddress,
+            key: formData.key,
+            imgName: null,
+            url: null
+        };
         //let folderName = '';
         let index = 0;
         //formData.newsMedia ? folderName = 'newsMedia' : folderName = 'newposts';
         // console.log('addNewPost action folderName2', folderName2);
         if (!formData.imgName && !isUpdate) {
+            console.log('1');
             Array.from(formData.imageFile).map((img, index) => {
                 imgName.push(img.file.name);
                 return imgName;
             });
             Array.from(formData.imageFile).map(img => {
-                return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
+                return storage.ref(`/images/${formData.key}/${img.file.name}?key=${formData.key}`).put(img.file)
                     .then(res => {
                         storage
                             .ref(`${res.ref.fullPath}`)
@@ -55,6 +67,7 @@ export const addNewPost = (formData, isUpdate, folderName) => {
                                         photographs: formData.photographs,
                                         architecture: formData.architecture,
                                         year: formData.year,
+                                        text: formData.textField,
                                         describeData: formData.describeData,
                                         webAddress: formData.webAddress,
                                         key: formData.key,
@@ -78,7 +91,9 @@ export const addNewPost = (formData, isUpdate, folderName) => {
                     });
             });
         } else {
+            console.log('2');
             if (formData.imageFile.length >= 1) {
+                console.log('3');
                 storage.ref(`/images/${formData.imgName}?key=${formData.key}`).delete().then(response => {
                     axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
                         Array.from(formData.imageFile).map(img => {
@@ -97,6 +112,7 @@ export const addNewPost = (formData, isUpdate, folderName) => {
                                                     year: formData.year,
                                                     describeData: formData.describeData,
                                                     webAddress: formData.webAddress,
+                                                    text: formData.textField,
                                                     key: formData.key,
                                                     imgName: imgName.toString(),
                                                     url: urlList.toString()
@@ -116,6 +132,7 @@ export const addNewPost = (formData, isUpdate, folderName) => {
                     })
                 })
             } else {
+                console.log('4');
                 axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
                     console.log(response);
                     axios.post(`/${folderName}.json`, formData)

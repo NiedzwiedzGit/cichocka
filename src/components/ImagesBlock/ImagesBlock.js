@@ -39,6 +39,13 @@ class ImagesBlock extends Component {
                     </div>)
 
                 break;
+            case 'Info':
+                content = (
+                    <div className={classes.ImagesBlockText}>
+                        <p> <strong>Text</strong>: {this.props.text} </p>
+                    </div>)
+
+                break;
         }
         return (
 

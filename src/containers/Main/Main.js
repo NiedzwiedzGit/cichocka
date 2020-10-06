@@ -36,13 +36,14 @@ class Main extends Component {
         url: [],
         text: false,
         test: null,
-        id: []
+        id: [],
+        folderName: 'newposts'
     }
 
     deletePost = (id, imgName, key) => {
         this.setState({ id: [...this.state.id, key] });
 
-        this.props.onDeletePost(id, imgName, key);
+        this.props.onDeletePost(id, imgName, key, this.state.folderName);
     }
     updatePostData = (postData) => {
         this.props.onUpdatePostData(postData);
@@ -76,6 +77,7 @@ class Main extends Component {
                         locationCountry={res.location}
                         year={res.year}
                         id={res.key}
+                        imageName={res.imgName}
                         clicked={() => this.deletePost(res.id, res.imgName, res.key)}
                         clickedUpdate={() => this.updatePostData(res)}
                         clickedOn={() => this.postSelectedHandler(res.key, res.url.split(","))}
@@ -101,7 +103,7 @@ class Main extends Component {
                     btnType={!this.props.addNewPostContainer ? "Add" : "Close"}
                     clicked={this.props.onAddNewPost} />
                 {this.props.addNewPostContainer && !this.props.loading ? <NewPost
-                    folderName='newposts'
+                    folderName={this.state.folderName}
                 /> : null}
                 {this.props.addNewPostContainer ? <Backdrop
                     show={this.props.addNewPostContainer}
@@ -136,7 +138,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
         // onFetchPostContent: () => dispatch(actions.fetchPostContent()),
-        onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
+        onDeletePost: (id, imgName, key, folderName) => dispatch(actions.deletePost(id, imgName, key, folderName)),
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
         onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData)),
         onUrlArray: (urlArray) => dispatch(actions.getUrlArray(urlArray)),

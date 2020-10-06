@@ -4,6 +4,7 @@ export {
     fetchMainContent,
     fetchPostContent,
     fetchNewsMediaContent,
+    fetchTextContent,
     deletePost,
     getUrlArray
 

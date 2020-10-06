@@ -25,7 +25,8 @@ const override = css`
 `;
 class NewsMedia extends Component {
     state = {
-        id: []
+        id: [],
+        folderName: 'newsMedia'
     }
     componentDidMount() {
         this.props.newsMedia ? console.log("newsMedia test", this.props.newsMedia) : console.log("newsMedia test nooo", this.props.newsMedia)
@@ -42,8 +43,7 @@ class NewsMedia extends Component {
     }
     deletePost = (id, imgName, key) => {
         this.setState({ id: [...this.state.id, key] });
-
-        this.props.onDeletePost(id, imgName, key);
+        this.props.onDeletePost(id, imgName, key, this.state.folderName);
     }
     postSelectedHandler = (id, urlArray) => {
         this.props.history.push({ pathname: "prasa/" + id });
@@ -90,7 +90,7 @@ class NewsMedia extends Component {
                 {this.props.addNewPostContainer && !this.props.loading ? <NewPost
                     newsMedia={true}
                     field={'describeData webAddress'}
-                    folderName='newsMedia'
+                    folderName={this.state.folderName}
                 /> : null}
                 {this.props.addNewPostContainer ? <Backdrop
                     show={this.props.addNewPostContainer}
@@ -114,7 +114,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
-        onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
+        onDeletePost: (id, imgName, key, folderName) => dispatch(actions.deletePost(id, imgName, key, folderName)),
         onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData)),
         onUrlArray: (urlArray) => dispatch(actions.getUrlArray(urlArray))
 

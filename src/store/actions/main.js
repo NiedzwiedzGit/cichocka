@@ -50,6 +50,15 @@ export const fetchPostContentFail = (error) => {
     };
 };
 
+export const fetchTextSuccess = (textVar) => {
+    console.log('[reduser textVar] ', textVar);
+    return {
+        type: actionTypes.FETCH_TEXT_SUCCESS,
+        textVar: textVar
+    };
+};
+
+
 export const getUrlArray = (urlArray) => {
     console.log("getUrlArray ", urlArray)
 
@@ -132,14 +141,33 @@ export const fetchNewsMediaContent = () => {
             });
     }
 }
-export const deletePost = (id, imgName, key) => {
-    console.log('[you want delete]=>', id)
-    console.log('[you want delete imageContentPath]=>', imgName)
+export const fetchTextContent = (folderName) => {
     return dispatch => {
-        axios.delete(`/newposts/${id}.json`, { data: { imgName: imgName } }).then(response => {
+        dispatch(() => fetchMainContentStart());
+        axios.get(`/${folderName}.json`)
+            .then(response => {
+                // console.log('[reduser newsMedia!!!] ', newsMedia);
+                const textVar = [];
+                for (let key in response.data) {
+                    textVar.push({
+                        ...response.data[key],
+                        id: key
+                    });
+                }
+                dispatch(fetchTextSuccess(textVar));
+            }).catch(error => {
+                dispatch(fetchMainContentFail(error));
+            });
+    }
+}
+export const deletePost = (id, imgName, key, folderName) => {
+    console.log('[you want delete]=>', id)
+    console.log('[you want delete folderName]=>', folderName)
+    return dispatch => {
+        axios.delete(`/${folderName}/${id}.json`, { data: { imgName: imgName } }).then(response => {
             console.log(response);
         });
-        axios.delete(`/newsMedia/${id}.json`, { data: { imgName: imgName } }).then(response => {
+        axios.delete(`/${folderName}/${id}.json`, { data: { imgName: imgName } }).then(response => {
             console.log(response);
         });
         storage.ref(`/images/${imgName}?key=${key}`).delete();

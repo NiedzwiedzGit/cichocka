@@ -89,6 +89,20 @@ class NewPost extends Component {
                 touched: false,
                 startView: false
             },
+            textField: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your text'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: false
+            },
             location: {
                 elementType: 'input',
                 elementConfig: {
@@ -219,6 +233,7 @@ class NewPost extends Component {
                 formData['imageFile'] = this.state.imageFile;
             }
             console.log("formData test ", formData);
+            console.log("this.props.folderName test ", this.props.folderName);
             this.props.onFetchNewPost(formData, this.props.updateHandler, this.props.folderName)
         } else this.resetForm();
         this.props.onAnimateSuccesErrorButton();
@@ -287,6 +302,20 @@ class NewPost extends Component {
                 elementConfig: {
                     type: 'url',
                     placeholder: 'URL'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false,
+                startView: false
+            },
+            textField: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your text'
                 },
                 value: '',
                 validation: {
@@ -426,7 +455,7 @@ class NewPost extends Component {
             }, 1000);
             animationButton = <ButtonBootstrap
                 variant="success"
-                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> +
+                onClick={this.submitPost}>{this.state.btnMessage}</ButtonBootstrap> ,
                 <Button
                     btnType="Success" />
 
