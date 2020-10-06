@@ -63,7 +63,7 @@ class ImagesBlockContent extends Component {
                 <h1>{this.props.match.params.architecture}</h1>
                 <ImageGallery
                     enableImageSelection={false}
-                    images={this.urlCounter()} />;
+                    images={this.urlCounter()} />.
             </div>;
         } else {
             a = <div >

@@ -206,6 +206,8 @@ class NewPost extends Component {
                         formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
                     } else if (!this.state.orderForm[formElementIdentifier].startView && this.state.orderForm[formElementIdentifier].value !== '') {
                         formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+                        this.props.newsMedia ? formData.newsMedia = this.props.newsMedia : null;
+
                     }
                 }
                 formData['imageFile'] = this.state.imageFile;
@@ -217,7 +219,7 @@ class NewPost extends Component {
                 formData['imageFile'] = this.state.imageFile;
             }
             console.log("formData test ", formData);
-            //  this.props.onFetchNewPost(formData, this.props.updateHandler)
+            this.props.onFetchNewPost(formData, this.props.updateHandler, this.props.folderName)
         } else this.resetForm();
         this.props.onAnimateSuccesErrorButton();
     }
@@ -354,6 +356,7 @@ class NewPost extends Component {
         const updatedOrderForm = updateObject(this.state.orderForm, {
             [inputIdentifier]: updatedFormElement
         });
+        // console.log('[from  this.props.field] ', this.props.field);
 
         let formIsValid = true;
 
@@ -362,13 +365,20 @@ class NewPost extends Component {
                 if (this.state.orderForm[inputIdentifier].startView) {
                     formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
                     this.props.updateHandler ? updateList[inputIdentifier] = updatedOrderForm[inputIdentifier].value : null;
+
                 }
             }
         } else {
+
             this.props.field.split(' ').map(res => {
                 formIsValid = updatedOrderForm[res].valid && formIsValid;
+                this.props.updateHandler ? updateList[inputIdentifier] = updatedOrderForm[inputIdentifier].value : null;
             })
         }
+        console.log('[from  updatedOrderForm] ', updatedOrderForm);
+        console.log('[from  formIsValid] ', formIsValid);
+        console.log('[from  updateList] ', updateList);
+
         this.setState({
             orderForm: updatedOrderForm,
             formIsValid: formIsValid,
@@ -566,7 +576,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchNewPost: (formData, isUpdate) => dispatch(actions.addNewPost(formData, isUpdate)),
+        onFetchNewPost: (formData, isUpdate, folderName) => dispatch(actions.addNewPost(formData, isUpdate, folderName)),
         //   onFetchNewPost: (formData, isUpdate) => dispatch(actions.addNewPost(formData, isUpdate)),
         onAnimateSuccesErrorButton: () => dispatch(actions.animateSuccesErrorButton()),
         onUpdatePostData: () => dispatch(actions.updatePostData())

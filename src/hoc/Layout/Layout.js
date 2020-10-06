@@ -27,6 +27,7 @@ class Layout extends Component {
         console.log(this.props.routes);
         // this.props.onFetchContent();
         this.props.onFetchPostContent();
+        this.props.onFetchNewsMediaContent();
     };
 
     sideDrawerClosedHandler = () => {
@@ -81,7 +82,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        // onFetchContent: () => dispatch(actions.fetchMainContent()),
+        onFetchNewsMediaContent: () => dispatch(actions.fetchNewsMediaContent()),
         onFetchPostContent: () => dispatch(actions.fetchPostContent())
     };
 };

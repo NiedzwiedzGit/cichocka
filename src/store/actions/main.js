@@ -26,12 +26,16 @@ export const fetchMainContentFail = (error) => {
 
 
 export const fetchPostContentSuccess = (postContent) => {
-    console.log('[reduser mainactions] ', postContent);
-    console.log('[fetchPostContentSuccess] ');
-
     return {
         type: actionTypes.FETCH_POST_CONTENT_SUCCESS,
         postContent: postContent
+    };
+};
+export const fetchNewsMediaSuccess = (newsMedia) => {
+    console.log('[reduser newsMedia] ', newsMedia);
+    return {
+        type: actionTypes.FETCH_NEWS_MEDIA_SUCCESS,
+        newsMedia: newsMedia
     };
 };
 export const fetchPostContentStart = () => {
@@ -109,11 +113,33 @@ export const fetchPostContent = () => {
     };
 };
 
+export const fetchNewsMediaContent = () => {
+    return dispatch => {
+        dispatch(() => fetchPostContentStart());
+        axios.get('/newsMedia.json')
+            .then(response => {
+                console.log('[reduser newsMedia!!!] ', newsMedia);
+                const newsMedia = [];
+                for (let key in response.data) {
+                    newsMedia.push({
+                        ...response.data[key],
+                        id: key
+                    });
+                }
+                dispatch(fetchNewsMediaSuccess(newsMedia));
+            }).catch(error => {
+                dispatch(fetchPostContentFail(error));
+            });
+    }
+}
 export const deletePost = (id, imgName, key) => {
     console.log('[you want delete]=>', id)
     console.log('[you want delete imageContentPath]=>', imgName)
     return dispatch => {
         axios.delete(`/newposts/${id}.json`, { data: { imgName: imgName } }).then(response => {
+            console.log(response);
+        });
+        axios.delete(`/newsMedia/${id}.json`, { data: { imgName: imgName } }).then(response => {
             console.log(response);
         });
         storage.ref(`/images/${imgName}?key=${key}`).delete();

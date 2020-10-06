@@ -3,6 +3,7 @@ export { addHeaderItem } from './header';
 export {
     fetchMainContent,
     fetchPostContent,
+    fetchNewsMediaContent,
     deletePost,
     getUrlArray
 
@@ -13,5 +14,7 @@ export {
     addNewPost,
     animateSuccesErrorButton,
     addNewPostContainer,
-    updatePostData
+    updatePostData,
+    // addNewNewsMediaContainer,
+    // updateNewsMediaData
 } from './newpost';

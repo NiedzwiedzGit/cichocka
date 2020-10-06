@@ -3,13 +3,11 @@ import axios from '../../axios-orders';
 import { storage } from '../../shared/firebase';
 
 export const addNewPostStart = () => {
-    console.log("addNewPostStart");
     return {
         type: actionTypes.ADD_NEW_POST_START
     };
 };
 export const addNewPostSuccess = (imageFile) => {
-    console.log("addNewPostSuccess", imageFile);
     return {
         type: actionTypes.ADD_NEW_POST_SUCCESS,
         imageFile: imageFile
@@ -17,27 +15,26 @@ export const addNewPostSuccess = (imageFile) => {
 };
 
 export const addNewPostFail = () => {
-    console.log("addNewPostFail");
     return {
         type: actionTypes.ADD_NEW_POST_FAIL
     };
 };
 export const animateSuccesErrorButton = () => {
-    console.log('testt loader loop');
     return {
         type: actionTypes.ADD_ANIMATE_SCS_ERR_BTN
     };
 };
 
-
-export const addNewPost = (formData, isUpdate) => {
-    console.log('addNewPost action ', formData);
+export const addNewPost = (formData, isUpdate, folderName) => {
     return dispatch => {
         dispatch(addNewPostStart());
         let imgName = [];
         let urlList = [];
         let data = {};
+        //let folderName = '';
         let index = 0;
+        //formData.newsMedia ? folderName = 'newsMedia' : folderName = 'newposts';
+        // console.log('addNewPost action folderName2', folderName2);
         if (!formData.imgName && !isUpdate) {
             Array.from(formData.imageFile).map((img, index) => {
                 imgName.push(img.file.name);
@@ -58,13 +55,15 @@ export const addNewPost = (formData, isUpdate) => {
                                         photographs: formData.photographs,
                                         architecture: formData.architecture,
                                         year: formData.year,
+                                        describeData: formData.describeData,
+                                        webAddress: formData.webAddress,
                                         key: formData.key,
                                         imgName: imgName.toString(),
                                         url: urlList.toString()
                                     };
                                     index++;
                                     if (formData.imageFile.length === index) {
-                                        axios.post(`/newposts.json`, data)
+                                        axios.post(`/${folderName}.json`, data)
                                             .then(response => {
                                                 dispatch(addNewPostSuccess(formData.imageFile));
                                                 console.log('---------', data.key);
@@ -78,12 +77,10 @@ export const addNewPost = (formData, isUpdate) => {
                             )
                     });
             });
-
-            console.log('---------', data);
         } else {
             if (formData.imageFile.length >= 1) {
                 storage.ref(`/images/${formData.imgName}?key=${formData.key}`).delete().then(response => {
-                    axios.delete(`/newposts/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
+                    axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
                         Array.from(formData.imageFile).map(img => {
                             return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
                                 .then(res => {
@@ -98,11 +95,13 @@ export const addNewPost = (formData, isUpdate) => {
                                                     photographs: formData.photographs,
                                                     architecture: formData.architecture,
                                                     year: formData.year,
+                                                    describeData: formData.describeData,
+                                                    webAddress: formData.webAddress,
                                                     key: formData.key,
-                                                    imgName: formData.imgName,
-                                                    url: url.toString()
+                                                    imgName: imgName.toString(),
+                                                    url: urlList.toString()
                                                 };
-                                                axios.post(`/newposts.json`, data)
+                                                axios.post(`/${folderName}.json`, data)
                                                     .then(response => {
                                                         dispatch(addNewPostSuccess(formData.imageFile));
                                                     })
@@ -117,12 +116,12 @@ export const addNewPost = (formData, isUpdate) => {
                     })
                 })
             } else {
-                axios.delete(`/newposts/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
+                axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
                     console.log(response);
-                    axios.post(`/newposts.json`, formData)
+                    axios.post(`/${folderName}.json`, formData)
                         .then(response => {
                             dispatch(addNewPostSuccess());
-                            console.log('-----update----', formData.key);
+                            console.log('-----update----', formData);
                         })
                         .catch(err => {
                             dispatch(addNewPostFail())
@@ -159,4 +158,26 @@ export const updatePostData = (postData) => {
         updateData: postData
     }
 }
+
+// export const addNewNewsMediaContainerStart = () => {
+//     return {
+//         type: actionTypes.ADD_NEW_NEWS_MEDIA_CONTAINER_START
+//     }
+// }
+// export const addNewNewsMediaContainerSuccess = (newsMediaData) => {
+//     return {
+//         type: actionTypes.ADD_NEW_NEWS_MEDIA_CONTAINER_SUCCESS,
+//         newsMediaData: newsMediaData
+//     }
+// }
+// export const addNewNewsMediaContainerFail = () => {
+//     return {
+//         type: actionTypes.ADD_NEW_NEWS_MEDIA_CONTAINER_FAIL
+//     }
+// }
+// export const addNewNewsMediaContainer = (newsMediaData) => {
+//     return dispatch => {
+
+//     }
+// }
 

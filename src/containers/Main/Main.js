@@ -49,10 +49,9 @@ class Main extends Component {
         this.props.onAddNewPost();
     }
     postSelectedHandler = (id, urlArray) => {
-        this.props.history.push({ pathname: '/postGalery/' + id });
+        this.props.history.push({ pathname: id });
         // console.log("urlArray ", urlArray)
         this.props.onUrlArray(urlArray);
-
     }
     onLoadContent = () => {
         let ImgBlock = <CircleLoader
@@ -71,6 +70,7 @@ class Main extends Component {
                         close={this.state.id.includes(res.key) ? 'Close' : null}
                         key={index}
                         url={res.url}
+                        page="Main"
                         architecture={res.architecture}
                         photographs={res.photographs}
                         locationCountry={res.location}
@@ -100,7 +100,9 @@ class Main extends Component {
                 <Button
                     btnType={!this.props.addNewPostContainer ? "Add" : "Close"}
                     clicked={this.props.onAddNewPost} />
-                {this.props.addNewPostContainer && !this.props.loading ? <NewPost /> : null}
+                {this.props.addNewPostContainer && !this.props.loading ? <NewPost
+                    folderName='newposts'
+                /> : null}
                 {this.props.addNewPostContainer ? <Backdrop
                     show={this.props.addNewPostContainer}
                     clicked={this.closeHandler} /> : null}
@@ -109,7 +111,8 @@ class Main extends Component {
                 </Suspense>
                 <Switch>
                     {/* <Route path={'/prasa'} exact component={newsMedia} /> */}
-                    <Route path={'/postGalery/:id'} component={postGalery} />
+                    <Route path={'/:id'} component={postGalery} />
+                    <Route path={'/:id'} component={postGalery} />
                     {/* <Redirect to="/" /> */}
                 </Switch>
 
@@ -132,7 +135,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchContent: () => dispatch(actions.fetchMainContent()),
-        onFetchPostContent: () => dispatch(actions.fetchPostContent()),
+        // onFetchPostContent: () => dispatch(actions.fetchPostContent()),
         onDeletePost: (id, imgName, key) => dispatch(actions.deletePost(id, imgName, key)),
         onAddNewPost: () => dispatch(actions.addNewPostContainer()),
         onUpdatePostData: (postData) => dispatch(actions.updatePostData(postData)),

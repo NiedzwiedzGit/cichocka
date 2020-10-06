@@ -7,6 +7,7 @@ const initialState = {
     loading: null,
     loadingContent: null,
     postContent: [],
+    newsMedia: [],
     refresh: false,
     urlArray: null
 };
@@ -33,12 +34,17 @@ const fetchPostContentStart = (state, action) => {
 };
 
 const fetchPostContentSuccess = (state, action) => {
-
     return updateObject(state, {
         loadingContent: false,
         postContent: action.postContent
     });
 
+};
+const fetchNewsMediaSuccess = (state, action) => {
+    return updateObject(state, {
+        // loadingContent: false,
+        newsMedia: action.newsMedia
+    });
 };
 const fetchPostContentFail = (state, action) => {
     return updateObject(state, { loadingContent: false });
@@ -57,6 +63,7 @@ const reducer = (state = initialState, action) => {
         case actionTypes.FETCH_POST_CONTENT_SUCCESS: return fetchPostContentSuccess(state, action);
         case actionTypes.FETCH_POST_CONTENT_FAIL: return fetchPostContentFail(state, action);
         case actionTypes.FETCH_POST_URL_LIST: return fetchPostUrlList(state, action);
+        case actionTypes.FETCH_NEWS_MEDIA_SUCCESS: return fetchNewsMediaSuccess(state, action);
 
         default: return state;
     }

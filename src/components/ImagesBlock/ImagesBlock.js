@@ -19,21 +19,37 @@ class ImagesBlock extends Component {
     //     return (this.props.clickedOn,)
     // }
     render() {
+        let content = null;
+        switch (this.props.page) {
+            case 'NewsMedia':
+                content = (
+                    <div className={classes.ImagesBlockText}>
+                        <p> <strong>Description</strong>:  {this.props.describeData} </p>
+                        <p><strong>URL</strong>: <a href={this.props.webAddress}>{this.props.webAddress}</a></p>
+                    </div>)
+
+                break;
+            case 'Main':
+                content = (
+                    <div className={classes.ImagesBlockText}>
+                        <p> <strong>Architects</strong>: {this.props.architecture} </p>
+                        <p><strong>Location</strong>: {this.props.locationCountry}</p>
+                        <p><strong>Year</strong>: {this.props.year}</p>
+                        <p><strong>Photographs</strong>: {this.props.photographs}</p>
+                    </div>)
+
+                break;
+        }
         return (
 
             <div className={[classes.ImagesBlock, classes[this.props.close]].join(' ')} >
-
-                {/* <Link to={'/postGalery/' + props.id}> */}
-                {/* .slice(0, -4) */}
-                {/* < img src={'images/' + props.url} alt="MyBurger" /> */}
-                <div className={classes.ImagesBlockPicture}>
+                <div className={classes.ImagesBlockLine}></div>
+                <div className={classes.ImagesBlockPicture} >
                     <img
                         src={this.props.url}
                         onClick={this.props.clickedOn}
                         alt="MyBurger" />
                 </div>
-                {/* </Link> */}
-                {/* {<ImagesBlockContent url={props.url} />} */}
                 <br />
                 {
                     this.props.auth ? <div className={classes.ImagesBlockBtnSwipe}>
@@ -41,12 +57,7 @@ class ImagesBlock extends Component {
                         <ButtonBootstrap variant="outline-primary" onClick={this.props.clickedUpdate}>Update</ButtonBootstrap>
                     </div > : null
                 }
-                <div className={classes.ImagesBlockText}>
-                    <p><strong>Architects</strong>: {this.props.architecture}</p>
-                    <p><strong>Location</strong>: {this.props.locationCountry}</p>
-                    <p><strong>Year</strong>: {this.props.year}</p>
-                    <p><strong>Photographs</strong>: {this.props.photographs}</p>
-                </div>
+                {content}
 
             </div >
         );
