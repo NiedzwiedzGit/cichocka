@@ -58,6 +58,13 @@ transition-timing-function: liner;
         animation-fill-mode: forwards;
        
     }
+    .TextArea{
+        max-width: 60%;
+        font-size: 90%!important;
+        text-indent: 50px;
+  text-align: justify;
+  letter-spacing: 2px;
+    }
 
 @media(max-width:700px){
     .ImagesBlock {

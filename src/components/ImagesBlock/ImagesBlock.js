@@ -20,6 +20,14 @@ class ImagesBlock extends Component {
     // }
     render() {
         let content = null;
+        let imageVar = (
+            <div className={classes.ImagesBlockPicture} >
+                <img
+                    src={this.props.url}
+                    onClick={this.props.clickedOn}
+                    alt="MyBurger" />
+            </div>
+        );
         switch (this.props.page) {
             case 'NewsMedia':
                 content = (
@@ -40,9 +48,10 @@ class ImagesBlock extends Component {
 
                 break;
             case 'Info':
+                imageVar = null;
                 content = (
                     <div className={classes.ImagesBlockText}>
-                        <p> <strong>Text</strong>: {this.props.text} </p>
+                        <p className={classes.TextArea}>{this.props.text}</p>
                     </div>)
 
                 break;
@@ -51,12 +60,7 @@ class ImagesBlock extends Component {
 
             <div className={[classes.ImagesBlock, classes[this.props.close]].join(' ')} >
                 <div className={classes.ImagesBlockLine}></div>
-                <div className={classes.ImagesBlockPicture} >
-                    <img
-                        src={this.props.url}
-                        onClick={this.props.clickedOn}
-                        alt="MyBurger" />
-                </div>
+                {imageVar}
                 <br />
                 {
                     this.props.auth ? <div className={classes.ImagesBlockBtnSwipe}>

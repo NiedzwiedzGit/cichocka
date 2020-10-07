@@ -30,123 +30,135 @@ export const addNewPost = (formData, isUpdate, folderName) => {
         dispatch(addNewPostStart());
         let imgName = [];
         let urlList = [];
-        let data = {
-            location: formData.location,
-            photographs: formData.photographs,
-            architecture: formData.architecture,
-            year: formData.year,
-            text: formData.textField,
-            describeData: formData.describeData,
-            webAddress: formData.webAddress,
-            key: formData.key,
-            imgName: null,
-            url: null
-        };
+        let data = {};
         //let folderName = '';
         let index = 0;
         //formData.newsMedia ? folderName = 'newsMedia' : folderName = 'newposts';
         // console.log('addNewPost action folderName2', folderName2);
-        if (!formData.imgName && !isUpdate) {
-            console.log('1');
-            Array.from(formData.imageFile).map((img, index) => {
-                imgName.push(img.file.name);
-                return imgName;
-            });
-            Array.from(formData.imageFile).map(img => {
-                return storage.ref(`/images/${formData.key}/${img.file.name}?key=${formData.key}`).put(img.file)
-                    .then(res => {
-                        storage
-                            .ref(`${res.ref.fullPath}`)
-                            .getDownloadURL().then(
-                                url => {
-                                    console.log('addNewPost action imgName', imgName);
-                                    console.log(url.toString());
-                                    urlList.push(url);
-                                    data = {
-                                        location: formData.location,
-                                        photographs: formData.photographs,
-                                        architecture: formData.architecture,
-                                        year: formData.year,
-                                        text: formData.textField,
-                                        describeData: formData.describeData,
-                                        webAddress: formData.webAddress,
-                                        key: formData.key,
-                                        imgName: imgName.toString(),
-                                        url: urlList.toString()
-                                    };
-                                    index++;
-                                    if (formData.imageFile.length === index) {
-                                        axios.post(`/${folderName}.json`, data)
-                                            .then(response => {
-                                                dispatch(addNewPostSuccess(formData.imageFile));
-                                                console.log('---------', data.key);
-                                            })
-                                            .catch(err => {
-                                                dispatch(addNewPostFail())
-                                            }
-                                            );
-                                    }
-                                }
-                            )
-                    });
-            });
-        } else {
-            console.log('2');
-            if (formData.imageFile.length >= 1) {
-                console.log('3');
-                storage.ref(`/images/${formData.imgName}?key=${formData.key}`).delete().then(response => {
-                    axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
-                        Array.from(formData.imageFile).map(img => {
-                            return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
-                                .then(res => {
-                                    let data = {};
-                                    storage
-                                        .ref(`${res.ref.fullPath}`)
-                                        .getDownloadURL().then(
-                                            url => {
-                                                console.log(url.toString());
-                                                data = {
-                                                    location: formData.location,
-                                                    photographs: formData.photographs,
-                                                    architecture: formData.architecture,
-                                                    year: formData.year,
-                                                    describeData: formData.describeData,
-                                                    webAddress: formData.webAddress,
-                                                    text: formData.textField,
-                                                    key: formData.key,
-                                                    imgName: imgName.toString(),
-                                                    url: urlList.toString()
-                                                };
-                                                axios.post(`/${folderName}.json`, data)
-                                                    .then(response => {
-                                                        dispatch(addNewPostSuccess(formData.imageFile));
-                                                    })
-                                                    .catch(err => {
-                                                        dispatch(addNewPostFail())
-                                                    }
-                                                    );
-                                            }
-                                        )
-                                });
-                        });
-                    })
+        if (formData.imgName == null && !isUpdate) {
+            data = {
+                location: formData.location,
+                photographs: formData.photographs,
+                architecture: formData.architecture,
+                year: formData.year,
+                textField: formData.textField,
+                describeData: formData.describeData,
+                webAddress: formData.webAddress,
+                key: formData.key,
+                imgName: imgName.toString(),
+                url: urlList.toString()
+            };
+            axios.post(`/${folderName}.json`, data)
+                .then(response => {
+                    dispatch(addNewPostSuccess(formData.imageFile));
+                    console.log('---------', data.key);
                 })
-            } else {
-                console.log('4');
-                axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
-                    console.log(response);
-                    axios.post(`/${folderName}.json`, formData)
-                        .then(response => {
-                            dispatch(addNewPostSuccess());
-                            console.log('-----update----', formData);
-                        })
-                        .catch(err => {
-                            dispatch(addNewPostFail())
-                        }
-                        );
+                .catch(err => {
+                    dispatch(addNewPostFail())
+                }
+                );
+        } else
+            if (!formData.imgName && !isUpdate) {
+                console.log('formData.imgName ', formData.imgName);
+                Array.from(formData.imageFile).map((img, index) => {
+                    imgName.push(img.file.name);
+                    return imgName;
                 });
+                Array.from(formData.imageFile).map(img => {
+                    return storage.ref(`/images/${formData.key}/${img.file.name}?key=${formData.key}`).put(img.file)
+                        .then(res => {
+                            storage
+                                .ref(`${res.ref.fullPath}`)
+                                .getDownloadURL().then(
+                                    url => {
+                                        console.log('addNewPost action imgName', imgName);
+                                        console.log(url.toString());
+                                        urlList.push(url);
+                                        data = {
+                                            location: formData.location,
+                                            photographs: formData.photographs,
+                                            architecture: formData.architecture,
+                                            year: formData.year,
+                                            textField: formData.textField,
+                                            describeData: formData.describeData,
+                                            webAddress: formData.webAddress,
+                                            key: formData.key,
+                                            imgName: imgName.toString(),
+                                            url: urlList.toString()
+                                        };
+                                        index++;
+                                        if (formData.imageFile.length === index) {
+                                            axios.post(`/${folderName}.json`, data)
+                                                .then(response => {
+                                                    dispatch(addNewPostSuccess(formData.imageFile));
+                                                    console.log('---------', data.key);
+                                                })
+                                                .catch(err => {
+                                                    dispatch(addNewPostFail())
+                                                }
+                                                );
+                                        }
+                                    }
+                                )
+                        });
+                });
+            } else {
+                console.log('2');
+                if (formData.imageFile.length >= 1) {
+                    console.log('3');
+                    storage.ref(`/images/${formData.imgName}?key=${formData.key}`).delete().then(response => {
+                        axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
+                            Array.from(formData.imageFile).map(img => {
+                                return storage.ref(`/images/${img.file.name}?key=${formData.key}`).put(img.file)
+                                    .then(res => {
+                                        let data = {};
+                                        storage
+                                            .ref(`${res.ref.fullPath}`)
+                                            .getDownloadURL().then(
+                                                url => {
+                                                    console.log(url.toString());
+                                                    data = {
+                                                        location: formData.location,
+                                                        photographs: formData.photographs,
+                                                        architecture: formData.architecture,
+                                                        year: formData.year,
+                                                        describeData: formData.describeData,
+                                                        webAddress: formData.webAddress,
+                                                        textField: formData.textField,
+                                                        key: formData.key,
+                                                        imgName: imgName.toString(),
+                                                        url: urlList.toString()
+                                                    };
+                                                    axios.post(`/${folderName}.json`, data)
+                                                        .then(response => {
+                                                            dispatch(addNewPostSuccess(formData.imageFile));
+                                                        })
+                                                        .catch(err => {
+                                                            dispatch(addNewPostFail())
+                                                        }
+                                                        );
+                                                }
+                                            )
+                                    });
+                            });
+                        })
+                    })
+                } else {
+                    console.log('4');
+                    axios.delete(`/${folderName}/${formData.id}.json`, { data: { key: formData.key } }).then(response => {
+                        console.log(response);
+                        axios.post(`/${folderName}.json`, formData)
+                            .then(response => {
+                                dispatch(addNewPostSuccess());
+                                console.log('-----update----', formData);
+                            })
+                            .catch(err => {
+                                dispatch(addNewPostFail())
+                            }
+                            );
+                    });
+                }
             }
-        }
 
         // initiates the firebase side uploading
         // uploadTask.on('state_changed',

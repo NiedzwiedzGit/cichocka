@@ -90,7 +90,7 @@ class NewPost extends Component {
                 startView: false
             },
             textField: {
-                elementType: 'input',
+                elementType: 'textarea',
                 elementConfig: {
                     type: 'text',
                     placeholder: 'Your text'
@@ -312,7 +312,8 @@ class NewPost extends Component {
                 startView: false
             },
             textField: {
-                elementType: 'input',
+                // <textarea placeholder="Remember, be nice!" cols="30" rows="5"></textarea>
+                elementType: 'textarea',
                 elementConfig: {
                     type: 'text',
                     placeholder: 'Your text'

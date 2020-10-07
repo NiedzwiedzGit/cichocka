@@ -71,7 +71,7 @@ class NewsMedia extends Component {
                         key={index}
                         url={res.url}
                         page="Info"
-                        text={res.text}
+                        text={res.textField}
                         id={res.key}
                         clicked={() => this.deletePost(res.id, res.imgName, res.key)}
                         clickedUpdate={() => this.updatePostData(res)}
