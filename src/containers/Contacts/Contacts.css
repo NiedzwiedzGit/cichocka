@@ -1,8 +1,12 @@
-.Contacts{
+.NewsMedia{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 5em;
     width: 100%;
-    height: 100%;
     text-align: center;
 }
-.Contacts p{
-    margin: 0;
+.NewsMedia p{
+    margin: auto;
 }

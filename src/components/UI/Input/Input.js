@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Input.css';
+import Form from 'react-bootstrap/Form';
 
 const input = (props) => {
     let inputElement = null;
@@ -8,6 +9,10 @@ const input = (props) => {
 
     if (props.invalid && props.shouldValidate && props.touched) {
         inputClasses.push(classes.Invalid);
+    }
+
+    if (props.hide == 'true' && props.shouldValidate && props.touched) {
+        inputClasses.push(classes.Hide);
     }
     let validationError = null;
     if (props.invalid && props.touched) {
@@ -20,7 +25,8 @@ const input = (props) => {
                 }
                 {...props.elementConfig}
                 value={props.value}
-                onChange={props.changed} />;
+                onChange={props.changed}
+                disabled={props.disabled} />;
             break;
         case ('textarea'):
             inputElement = <textarea
@@ -54,13 +60,14 @@ const input = (props) => {
                 value={props.value}
                 onChange={props.changed} />;
     }
-
+    console.log("[hide props ]", props.hide ? "work!!!" : null);
     return (
         <div className={classes.Input}>
             <label className={classes.Label}>{props.label}</label>
             {inputElement}
+            <input type="checkbox" onClick={props.clicked} />
             {validationError}
-        </div>
+        </div >
     );
 
 };

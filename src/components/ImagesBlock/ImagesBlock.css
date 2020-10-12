@@ -59,7 +59,7 @@ transition-timing-function: liner;
        
     }
     .TextArea{
-        max-width: 60%;
+        max-width: 1600px;
         font-size: 90%!important;
         text-indent: 50px;
   text-align: justify;

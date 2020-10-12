@@ -48,13 +48,22 @@ class ImagesBlock extends Component {
 
                 break;
             case 'Info':
+            case 'Histories':
+            case 'Clients':
                 imageVar = null;
-                content = (
-                    <div className={classes.ImagesBlockText}>
-                        <p className={classes.TextArea}>{this.props.text}</p>
-                    </div>)
+                this.props.webAddress == null ?
+                    content = (
+                        <div className={classes.ImagesBlockText}>
+                            <p className={classes.TextArea}>{this.props.text}</p>
+                        </div>) :
+                    content = (
+                        <div className={classes.ImagesBlockText}>
+                            <p className={classes.TextArea}>{this.props.text}</p>
+                            <p><a href={this.props.webAddress}>{this.props.webAddress}</a></p>
+                        </div>)
 
                 break;
+
         }
         return (
 

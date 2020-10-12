@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import Button from '../../components/UI/Button/Button';
 import ButtonBootstrap from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 import { updateObject, checkValidity } from '../../shared/utility';
@@ -31,7 +33,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             photographs: {
                 elementType: 'input',
@@ -45,7 +48,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             location: {
                 elementType: 'input',
@@ -59,7 +63,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             describeData: {
                 elementType: 'input',
@@ -73,7 +78,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: false
+                startView: false,
+                hide: ''
             },
             webAddress: {
                 elementType: 'input',
@@ -85,9 +91,10 @@ class NewPost extends Component {
                 validation: {
                     required: true
                 },
-                valid: false,
-                touched: false,
-                startView: false
+                valid: true,
+                touched: true,
+                startView: false,
+                hide: ''
             },
             textField: {
                 elementType: 'textarea',
@@ -101,7 +108,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: false
+                startView: false,
+                hide: ''
             },
             location: {
                 elementType: 'input',
@@ -115,7 +123,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             year: {
                 elementType: 'input',
@@ -132,7 +141,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             // country: {
             //     elementType: 'input',
@@ -180,6 +190,7 @@ class NewPost extends Component {
         // region: '',
         // author: '',
         // year: '',
+
         imgNeme: '',
         updateForm: {},
         btnMessage: "Success",
@@ -253,7 +264,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             photographs: {
                 elementType: 'input',
@@ -267,7 +279,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             location: {
                 elementType: 'input',
@@ -281,7 +294,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             describeData: {
                 elementType: 'input',
@@ -295,21 +309,24 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: false
+                startView: false,
+                hide: ''
             },
             webAddress: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'url',
-                    placeholder: 'URL'
+                    placeholder: 'URL',
+                    hide: ''
                 },
                 value: '',
                 validation: {
                     required: true
                 },
-                valid: false,
-                touched: false,
-                startView: false
+                valid: true,
+                touched: true,
+                startView: false,
+                hide: ''
             },
             textField: {
                 // <textarea placeholder="Remember, be nice!" cols="30" rows="5"></textarea>
@@ -324,7 +341,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: false
+                startView: false,
+                hide: ''
             },
             location: {
                 elementType: 'input',
@@ -338,7 +356,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             },
             year: {
                 elementType: 'input',
@@ -355,7 +374,8 @@ class NewPost extends Component {
                 },
                 valid: false,
                 touched: false,
-                startView: true
+                startView: true,
+                hide: ''
             }
         }
         this.setState({ orderForm: oldState });
@@ -378,9 +398,10 @@ class NewPost extends Component {
     }
     inputChangedHandler = (event, inputIdentifier) => {
         const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
-            value: !this.props.loading && this.props.animate ? '' : event.target.value,
+            value: !this.props.loading && this.props.animate || event.target.value == 'on' ? '' : event.target.value,
             valid: !this.props.loading && this.props.animate ? false : checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
-            touched: !this.props.loading && this.props.animate ? false : true
+            touched: !this.props.loading && this.props.animate ? false : true,
+            hide: !this.props.loading && this.props.animate || event.target.value == 'on' ? 'true' : event.target.value,
         });
         let updateList = this.state.updateForm;
         const updatedOrderForm = updateObject(this.state.orderForm, {
@@ -407,14 +428,22 @@ class NewPost extends Component {
         }
         console.log('[from  updatedOrderForm] ', updatedOrderForm);
         console.log('[from  formIsValid] ', formIsValid);
-        console.log('[from  updateList] ', updateList);
-
+        console.log('[hide prop NewPost] ', event.target.value);
+        //<Input hide={event.target.value} />
         this.setState({
+            // hide: event.target.value,
             orderForm: updatedOrderForm,
             formIsValid: formIsValid,
             updateForm: updateList
         });
     }
+    // inputChanged = (formElement) => {
+    //     console.log("[formElement.config.elementConfig.disabled222] ", formElement);
+    //     const updatedOrderForm2 = updateObject(this.state.orderForm[formElement], {
+    //         value: ''
+    //     });
+    //     return this.setState({ orderForm: updatedOrderForm2 })
+    // }
 
     render() {
         console.log('updateForm ', this.state.updateForm);
@@ -461,21 +490,39 @@ class NewPost extends Component {
                     btnType="Success" />
 
         } else { animationButton = <label className={classes.Loading}><PropagateLoader /></label> }
+
         let form = (
             <form onSubmit={this.submitPost} >
                 <div className={classes[hidePostForm]}>
                     {formElementsArray.map(formElement => (
-                        <Input
-                            key={formElement.id}
-                            elementType={formElement.config.elementType}
-                            elementConfig={formElement.config.elementConfig}
-                            value={formElement.config.value}
-                            invalid={!formElement.config.valid}
-                            shouldValidate={formElement.config.validation}
-                            touched={formElement.config.touched}
-                            changed={(event) => this.inputChangedHandler(event, formElement.id)} />
+                        console.log("[formElement.config.elementConfig.disabled] ", formElement.config.hide),
+
+                        < div >
+                            <Input
+                                key={formElement.id}
+                                elementType={formElement.config.elementType}
+                                elementConfig={formElement.config.elementConfig}
+                                disabled={this.state.orderForm.disabled}
+                                value={formElement.config.value}
+                                invalid={!formElement.config.valid}
+                                shouldValidate={formElement.config.validation}
+                                touched={formElement.config.touched}
+                                hide={formElement.config.hide}
+                                changed={(event) => this.inputChangedHandler(event, formElement.id)}
+                                clicked={(event) => this.inputChangedHandler(event, formElement.id)}
+                            />
+                            {/* <Form.Check
+                                //type="switch"
+                                id="custom-switch"
+                                label="."
+                                disabled={this.state.orderForm.disabled}
+                            //onClick={() => this.setState({ orderForm: { disabled: !disabled } })}
+                            /> */}
+                        </div>
                     ))}
                 </div>
+
+
                 {/* <Button btnType="Success" disabled={!this.state.formIsValid}></Button> */}
                 <Button
                     btnState={hidePostForm + 'PostForm'}
