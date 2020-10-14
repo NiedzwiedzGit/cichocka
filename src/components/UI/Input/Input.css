@@ -19,6 +19,9 @@
     display: block;
     width: 100%;
     box-sizing: border-box;
+    transition:0.8s;
+    transition-timing-function: liner;
+
 }
 
 .InputElement:focus {
@@ -31,7 +34,7 @@ background-color: salmon;
 }
 .Hide{
     width: 50%!important;
-    transform: scale(1.2);
-    transition:0.8s;
-    transition-timing-function: liner;
+    /*transform: scale(1.2);*/
+    background-color:  rgb(158, 140, 140);
+    pointer-events: none;
 }

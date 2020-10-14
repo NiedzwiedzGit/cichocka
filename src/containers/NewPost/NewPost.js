@@ -34,7 +34,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             photographs: {
                 elementType: 'input',
@@ -49,7 +49,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             location: {
                 elementType: 'input',
@@ -64,7 +64,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             describeData: {
                 elementType: 'input',
@@ -79,7 +79,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: false,
-                hide: ''
+                hide: true
             },
             webAddress: {
                 elementType: 'input',
@@ -94,7 +94,7 @@ class NewPost extends Component {
                 valid: true,
                 touched: true,
                 startView: false,
-                hide: ''
+                hide: true
             },
             textField: {
                 elementType: 'textarea',
@@ -109,7 +109,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: false,
-                hide: ''
+                hide: true
             },
             location: {
                 elementType: 'input',
@@ -124,7 +124,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             year: {
                 elementType: 'input',
@@ -142,7 +142,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             // country: {
             //     elementType: 'input',
@@ -265,7 +265,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             photographs: {
                 elementType: 'input',
@@ -280,7 +280,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             location: {
                 elementType: 'input',
@@ -295,7 +295,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             describeData: {
                 elementType: 'input',
@@ -310,14 +310,14 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: false,
-                hide: ''
+                hide: true
             },
             webAddress: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'url',
                     placeholder: 'URL',
-                    hide: ''
+                    hide: true
                 },
                 value: '',
                 validation: {
@@ -326,7 +326,7 @@ class NewPost extends Component {
                 valid: true,
                 touched: true,
                 startView: false,
-                hide: ''
+                hide: true
             },
             textField: {
                 // <textarea placeholder="Remember, be nice!" cols="30" rows="5"></textarea>
@@ -342,7 +342,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: false,
-                hide: ''
+                hide: true
             },
             location: {
                 elementType: 'input',
@@ -357,7 +357,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             },
             year: {
                 elementType: 'input',
@@ -375,7 +375,7 @@ class NewPost extends Component {
                 valid: false,
                 touched: false,
                 startView: true,
-                hide: ''
+                hide: true
             }
         }
         this.setState({ orderForm: oldState });
@@ -401,7 +401,8 @@ class NewPost extends Component {
             value: !this.props.loading && this.props.animate || event.target.value == 'on' ? '' : event.target.value,
             valid: !this.props.loading && this.props.animate ? false : checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
             touched: !this.props.loading && this.props.animate ? false : true,
-            hide: !this.props.loading && this.props.animate || event.target.value == 'on' ? 'true' : event.target.value,
+            // hide: !this.props.loading && this.props.animate ? !this.state.orderForm[inputIdentifier].hide : event.target.value
+            //     || event.target.value == 'on'
         });
         let updateList = this.state.updateForm;
         const updatedOrderForm = updateObject(this.state.orderForm, {
@@ -437,13 +438,20 @@ class NewPost extends Component {
             updateForm: updateList
         });
     }
-    // inputChanged = (formElement) => {
-    //     console.log("[formElement.config.elementConfig.disabled222] ", formElement);
-    //     const updatedOrderForm2 = updateObject(this.state.orderForm[formElement], {
-    //         value: ''
-    //     });
-    //     return this.setState({ orderForm: updatedOrderForm2 })
-    // }
+    inputChanged = (event, inputIdentifier) => {
+        console.log("[formElement.config.elementConfig.disabled222] ", inputIdentifier);
+        console.log("[formElement.config.elementConfig.disabled111] ", this.state.orderForm[inputIdentifier].hide);
+
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: !this.props.loading && this.props.animate || event.target.value == 'on' ? '' : null,
+            hide: !this.state.orderForm[inputIdentifier].hide
+        });
+        const updatedOrderForm2 = updateObject(this.state.orderForm, {
+            [inputIdentifier]: updatedFormElement
+        });
+
+        return this.setState({ orderForm: updatedOrderForm2 })
+    }
 
     render() {
         console.log('updateForm ', this.state.updateForm);
@@ -495,7 +503,7 @@ class NewPost extends Component {
             <form onSubmit={this.submitPost} >
                 <div className={classes[hidePostForm]}>
                     {formElementsArray.map(formElement => (
-                        console.log("[formElement.config.elementConfig.disabled] ", formElement.config.hide),
+                        console.log("[formElement.config.elementConfig.disabled333] ", formElement.config.hide),
 
                         < div >
                             <Input
@@ -509,7 +517,7 @@ class NewPost extends Component {
                                 touched={formElement.config.touched}
                                 hide={formElement.config.hide}
                                 changed={(event) => this.inputChangedHandler(event, formElement.id)}
-                                clicked={(event) => this.inputChangedHandler(event, formElement.id)}
+                                clicked={(event) => this.inputChanged(event, formElement.id)}
                             />
                             {/* <Form.Check
                                 //type="switch"

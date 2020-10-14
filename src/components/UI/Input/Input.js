@@ -11,7 +11,7 @@ const input = (props) => {
         inputClasses.push(classes.Invalid);
     }
 
-    if (props.hide == 'true' && props.shouldValidate && props.touched) {
+    if (props.hide == false) {
         inputClasses.push(classes.Hide);
     }
     let validationError = null;
@@ -60,7 +60,7 @@ const input = (props) => {
                 value={props.value}
                 onChange={props.changed} />;
     }
-    console.log("[hide props ]", props.hide ? "work!!!" : null);
+    console.log("[hide props ]", props.hide ? "work!!! " + props.hide : null);
     return (
         <div className={classes.Input}>
             <label className={classes.Label}>{props.label}</label>
